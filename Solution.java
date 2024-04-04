@@ -1,5 +1,7 @@
 package bupt;
 
+import java.util.HashMap;
+
 public class Solution {
     //二分查找
     public int searchInsert(int[] nums, int target) {
@@ -147,7 +149,8 @@ public class Solution {
 
 
     }//844比较含退格的字符串
-    public int[] sortedSquares(int[] nums) {
+
+    /*public int[] sortedSquares(int[] nums) {
         int mid = 0;
         int minSqu = Integer.MAX_VALUE;
         for(int i = 0;i<nums.length;i++){
@@ -178,7 +181,149 @@ public class Solution {
         }
 
         return newNums;
-    }//977有序数组的平方
+    }
+    */  //977有序数组的平方
+
+    public int[] sortedSquares(int[] nums) {
+        int right = nums.length - 1;
+        int left = 0;
+        int[] result = new int[nums.length];
+        int index = result.length - 1;
+        while (left <= right) {
+            if (nums[left] * nums[left] > nums[right] * nums[right]) {
+                // 正数的相对位置是不变的， 需要调整的是负数平方后的相对位置
+                result[index--] = nums[left] * nums[left];
+                ++left;
+            } else {
+                result[index--] = nums[right] * nums[right];
+                --right;
+            }
+        }
+        return result;
+    }//977代码随想录版本
+
+
+
+    //滑动窗口法
+    public int minSubArrayLen(int target, int[] nums) {
+        int left = 0;
+        int result = Integer.MAX_VALUE;
+        long sum = 0;
+        for(int right = 0;right < nums.length; right++){
+            sum += nums[right];
+            while(sum >= target){
+                result = Math.min(result,right - left + 1);
+                System.out.println(result);//debug部分
+                sum -= nums[left];
+                left++;
+            }
+        }
+        if(result == Integer.MAX_VALUE) return 0;
+        else return result;
+    }//力扣209长度最小的数组
+
+
+    public int totalFruit(int[] fruits) {
+        int[] tempFruit =new int[2];
+        tempFruit[0] = -1;
+        tempFruit[1] = -1;
+        int left = 0;
+        int result = 0;
+        int temp_sum = 0;
+        for(int right = 0;right < fruits.length;right++){
+            if(tempFruit[0] == -1) {//初始化数组
+                tempFruit[0] = fruits[0];
+                temp_sum++;
+                result = 1;
+                right++;
+                while(right < fruits.length && fruits[right] == tempFruit[0]){
+                    temp_sum++;
+                    result++;
+                    right++;
+                }
+                if(right < fruits.length && fruits[right] != tempFruit[0]){
+                    temp_sum++;
+                    result++;
+                    tempFruit[1] = fruits[right];
+                }
+                continue;
+            }//先装2篮子
+            if(fruits[right] == tempFruit[0] || fruits[right] == tempFruit[1]){
+
+                temp_sum++;
+                result = Math.max(result, temp_sum);
+                continue;
+            }
+            else {
+                tempFruit[0] = fruits[right-1];
+                tempFruit[1] = fruits[right];
+                temp_sum = 2;
+                left = right -2;
+                while (left >= 0){
+                    if(fruits[left] == fruits[left+1]){
+                        temp_sum++;
+                        left--;
+                    }else break;
+                }
+            }
+
+        }
+
+
+        return result;
+
+    }//力扣904
+
+    public String minWindow(String s, String t) {
+        int sLen = s.length();
+        int tLen = t.length();
+        String result = "";
+        HashMap<Character,Integer> match = new HashMap<>();
+        HashMap<Character,Integer> window = new HashMap<>();
+        if(s.length() < t.length()) return "";
+        for(char c :t.toCharArray()){
+            match.put(c, match.getOrDefault(c,0) + 1);
+        }
+        int valid = 0, start = 0, res = Integer.MAX_VALUE;
+        for(int l =0,r = 0;r < s.length();r++){
+            char ch = s.charAt(r);
+            window.put(ch, window.getOrDefault(ch, 0) + 1);
+            // 判断右边界对应的字符是否存在于 match 中，存在的话需要判断 window 中该字符的计数值是否达到要求了
+            if (match.containsKey(ch)) {
+                if (match.get(ch).equals(window.get(ch))) {
+                    valid++;
+                }
+            }
+            // 若 window 内的有效字符已经包括 match 了，那么就收缩窗口，更新最小长度，更新最优解
+            while (valid == match.size()) {
+                // 窗口[l,r]的长度更小，则更新 res 和 start
+                if (r - l + 1 < res) {
+                    res = r - l + 1;
+                    start = l;
+                }
+                // 移出窗口中的左边界时，需要更新窗口中的有效字符的个数
+                char charAtL = s.charAt(l);
+                if (match.containsKey(charAtL)) {
+                    if (match.get(charAtL).equals(window.get(charAtL))) {
+                        valid--;
+                    }
+                }
+                // l 移出窗口
+                window.put(charAtL, window.get(charAtL) - 1);
+                l++;
+            }
+
+        }
+        return res == Integer.MAX_VALUE ? "" : s.substring(start, start + res);
+
+
+
+    }//力扣76最小覆盖子串
+
+
+
+
+
 
 
     }
