@@ -320,7 +320,64 @@ public class Solution {
 
     }//力扣76最小覆盖子串
 
+    public int[][] generateMatrix(int n) {
+        int loop = 0;
+        int[][] res = new int[n][n];
+        int start = 0;
+        int count = 1;
+        int i,j;
+        while(loop < n/2){
+            loop++;
+            for(j= start;j < n -loop;j++){//left to right
+                res[start][j] = count;
+                count++;
+            }
 
+            for(i = start; i < n - loop; i++){ //right to down
+                res[i][j] = count;
+                count++;
+            }
+
+            for(;j >= loop; j--){//right to left
+                res[i][j] = count;
+                count++;
+            }
+
+            for(;i >= loop;i--){
+                res[i][j] = count;
+                count++;
+            }
+            start++;
+        }
+        if(n % 2 == 1){
+            res[(n-1)/2][(n-1)/2] = count;
+        }
+        return  res;
+
+    }//59螺旋矩阵
+
+    public int[] spiralArray(int[][] array) {
+        if(array.length == 0) return new int[0];
+        int row = array.length,col = array[0].length;
+        int[] ans = new int[row * col];
+        int k = 0;
+        int l =0,r = col -1,t =0,b = row -1;
+        while(k < col * row){
+            for(int i=l;i<=r;i++)
+                ans[k++] = array[t][i];
+            t++;
+            for(int i=t;i<=b;i++)
+                ans[k++] = array[i][r];
+            r--;
+            for(int i=r;i>=l && t <= b;i--)
+                ans[k++] = array[b][i];
+            b--;
+            for(int i=b;i>=t && l <= r;i--)
+                ans[k++] = array[i][l];
+            l++;
+        }
+        return ans;
+    }//LCR146螺旋遍历二维矩阵
 
 
 
