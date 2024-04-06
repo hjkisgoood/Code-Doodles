@@ -1,6 +1,7 @@
 package bupt;
 
 import java.util.HashMap;
+import java.util.List;
 
 public class Solution {
     //二分查找
@@ -378,6 +379,19 @@ public class Solution {
         }
         return ans;
     }//LCR146螺旋遍历二维矩阵
+
+    public ListNode removeElements(ListNode head, int val) {
+        ListNode dummy =new ListNode();
+        dummy.next = head;
+        ListNode cur = dummy;
+        while (cur.next != null){
+            if(cur.next.val ==  val){
+                cur.next = cur.next.next;
+            }else cur = cur.next;
+        }
+
+        return dummy.next;
+    }//203移除链表元素
 
 
 
