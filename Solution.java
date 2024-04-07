@@ -393,8 +393,56 @@ public class Solution {
         return dummy.next;
     }//203移除链表元素
 
+    public ListNode reverseList(ListNode head) {
+        ListNode pre = null;
+        ListNode cur = head;
+        while(cur != null){
+            ListNode temp = cur.next;
+            cur.next = pre;
+            pre = cur;
+            cur = temp;
+        }
+        return pre;
+    }//206反转链表
 
+    public ListNode swapPairs(ListNode head) {
 
+        ListNode dummy = new ListNode();
+        dummy.next = head;
+        ListNode cur = dummy;
+        ListNode p1 = new ListNode();
+        ListNode p2 = new ListNode();
+        ListNode p3 = new ListNode();
+        while(cur.next != null && cur.next.next != null){
+
+            p1 = cur.next;
+            p2 = p1.next;
+            p3= p2.next;
+            cur.next = p2;
+            p2.next = p1;
+            p1.next = p3;
+            cur = p1;
+        }
+        return dummy.next;
+
+    }//24两两交换节点
+
+    public ListNode removeNthFromEnd(ListNode head, int n){
+        ListNode dummy = new ListNode();
+        dummy.next = head;
+        ListNode fast = dummy;
+        ListNode slow = dummy;
+        for(int i = 0;i <= n;i++){
+            fast = fast.next;
+        }
+        while(fast != null){
+            fast = fast.next;
+            slow = slow.next;
+        }
+        slow.next = slow.next.next;
+        return dummy.next;
+
+    }//19删除倒数n节点
 
 
     }
