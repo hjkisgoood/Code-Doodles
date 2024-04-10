@@ -1,6 +1,7 @@
 package bupt;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 
 public class Solution {
@@ -507,6 +508,96 @@ public class Solution {
         return null;
     }//142环形链表
 
-    
+    //4.10哈希表
+    //hashset是不重复的哈希表
+    //hashmap键值对哈希表
+    public boolean isAnagram(String s, String t) {
+        int[] record = new int[26];
+
+        for(int i = 0;i < s.length();i++){
+            record[s.charAt(i) - 'a']++;
+        }
+
+        for(int i =0 ;i < t.length();i++){
+            record[t.charAt(i) - 'a']--;
+        }
+        for(int count : record){
+            if(count != 0) return false;
+        }
+        return true;
+    }//242有效的字母异味词
+
+
+    public int[] intersection(int[] nums1, int[] nums2) {
+        if(nums1.length == 0 || nums2.length == 0 ){
+            return new int[0];
+        }
+        HashSet<Integer> set1 = new HashSet<>();
+        HashSet<Integer> set2 = new HashSet<>();
+        for(int i : nums1){
+            set1.add(i);
+        }
+        for(int i : nums2){
+            if(set1.contains(i)) set2.add(i);
+        }
+        int[] result = new int[set2.size()];
+        int j = 0;
+        for(int i : set2){
+            result[j] = i;
+            j++;
+        }
+        return result;
+
+
+    }//349两个数组的交集
+    public boolean isHappy(int n) {
+        HashSet<Integer> record = new HashSet<>();
+        while (n != 1 && !record.contains(n)){
+            record.add(n);
+            int n1 = 0;
+            for(int j;n != 0;n = n/10){
+                j = n % 10;
+                n1 = n1 + j*j;
+            }
+            n =n1;
+        }
+        return n == 1;
+    }//202快乐数
+    public int[] twoSum(int[] nums, int target) {
+        int [] res = new int[2];
+        HashMap<Integer, Integer> map = new HashMap<>();
+        for(int i = 0;i < nums.length;i++){
+            int temp = target - nums[i];// 遍历当前元素，并在map中寻找是否有匹配的key
+            if(map.containsKey(temp)){
+                res[1] = i;
+                res[0] = map.get(temp);
+                break;
+            }else map.put(nums[i], i);// 如果没找到匹配对，就把访问过的元素和下标加入到map中
+
+        }
+        return res;
+
+    }//1两数字和
+
+    public int fourSumCount(int[] nums1, int[] nums2, int[] nums3, int[] nums4) {
+        int res = 0;
+        HashMap<Integer, Integer> map = new HashMap<>();
+        //统计两个数组中的元素之和，同时统计出现的次数，放入map
+        for(int i : nums1){
+            for(int j : nums2){
+                int sum = i + j;
+                map.put(sum, map.getOrDefault(sum,0) +1);
+            }
+        }
+
+        //统计剩余的两个元素的和，在map中找是否存在相加为0的情况，同时记录次数
+        for(int i : nums3){
+            for(int j : nums4){
+                res += map.getOrDefault(0 - i - j, 0);
+            }
+        }
+        return res;
+
+    }//454四数相加等于0
 
     }
