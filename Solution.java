@@ -1,8 +1,6 @@
 package bupt;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
+import java.util.*;
 
 public class Solution {
     //二分查找
@@ -599,5 +597,47 @@ public class Solution {
         return res;
 
     }//454四数相加等于0
+
+    public boolean canConstruct(String ransomNote, String magazine) {
+        int []record = new int[26];
+
+        for(char c : magazine.toCharArray()){//遍历magezine
+            record[c - 'a']++;
+        }
+        for(char c : ransomNote.toCharArray()){
+            record[c - 'a']--;
+        }
+
+        for(int i : record){
+            if(i < 0 ) return false;
+        }
+        return true;
+
+    }//383赎金信
+
+    public List<List<Integer>> threeSum(int[] nums) {
+        List<List<Integer>> result = new ArrayList<>();
+        Arrays.sort(nums);
+        for(int i = 0;i < nums.length;i++){
+            if(nums[i] > 0) return result;//a,left,right如果a>0那么left+right就也大于0
+            if(i > 0 && nums[i] == nums[i-1]) continue;//去重
+            int left = i+1;
+            int right = nums.length-1;
+            while(right > left){
+                int sum = nums[i] + nums[left] + nums[right];
+                if(sum > 0) right--;
+                else if(sum < 0) left++;
+                else {
+                    result.add(Arrays.asList(nums[i] , nums[left], nums[right]));
+                    while(right > left && nums[left] == nums[left+1]) left++;
+                    while(right > left && nums[right] == nums[right-1]) right--;
+                    left++;
+                    right--;
+                }
+            }
+        }
+        return result;
+
+    }//15三数之和
 
     }
