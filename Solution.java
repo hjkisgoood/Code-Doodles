@@ -640,4 +640,85 @@ public class Solution {
 
     }//15三数之和
 
+
+    //4.12字符串
+
+    public void reverseString(char[] s) {
+        int l = 0;
+        int r = s.length-1;
+        while(l < r){
+            char tmp = s[l];
+            s[l] = s[r];
+            s[r] = tmp;
+            l++;
+            r--;
+        }
+    }//344反转链表
+
+    public String reverseStr(String s, int k) {
+        char[] ch  = s.toCharArray();
+        for(int i = 0 ; i < ch.length-1;i += 2*k){
+            int start = i;
+            int end = Math.min(ch.length-1 , start+k-1);
+            while(start < end){
+                char tmp = ch[start];
+                ch[start] = ch[end];
+                ch[end] = tmp;
+                start++;
+                end--;
+                System.out.println(ch[start]);
+            }
+        }
+        return new String(ch);
+
+    }//541反转字符串2
+//字符数组转换String用new String[ch]
+    public String reverseWords(String s) {
+        StringBuilder sb = removeSpace(s);//删除多余空格
+        System.out.println(sb);
+        reverseString(sb,0,sb.length() -1);//反转
+        System.out.println(sb);
+        reverseEachWord(sb);
+        System.out.println(sb);
+        return sb.toString();
+
+    }//151反转字符串中的单词
+    private StringBuilder removeSpace(String s){
+        int start = 0;
+        int end = s.length() - 1;
+        while(s.charAt(start) == ' ') start ++;
+        while(s.charAt(end) == ' ') end--;
+        StringBuilder sb = new StringBuilder();
+        while(start <= end){
+            char c = s.charAt(start);
+            if(c != ' ' || sb.charAt(sb.length() - 1) != ' '){
+                sb.append(c);
+            }
+            start++;
+        }
+        return sb;
+    }
+     public void reverseString(StringBuilder sb, int start, int end){
+        while(start < end){
+            char tmp = sb.charAt(start);
+            sb.setCharAt(start, sb.charAt(end));
+            sb.setCharAt(end, tmp);
+            start++;
+            end--;
+        }
+     }
+     private void reverseEachWord(StringBuilder sb){
+        int start = 0;
+        int end = 1;
+        int n = sb.length();
+        while(start < n){
+            while (end < n && sb.charAt(end) != ' '){
+                end++;
+            }
+            reverseString(sb, start, end-1);
+            start = end + 1;
+            end = start + 1;
+        }
+     }
+
     }
