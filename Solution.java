@@ -784,6 +784,80 @@ public class Solution {
 
     }//459重复的子字符串
 
+    public boolean isValid(String s) {
+        Deque<Character> deque = new LinkedList<>();//这里使用栈
+        char ch;
+        for(int i = 0;i< s.length();i++){
+            ch = s.charAt(i);
+            if(ch == '(') deque.push(')');
+            else if(ch == '[') deque.push(']');
+            else if (ch == '{') deque.push('}');
+            else if(deque.isEmpty() || deque.peek() != ch) return false;
+            else deque.pop();//如果是右括号且匹配则弹出栈顶
+        }
+        return deque.isEmpty();//栈为空说明匹配完成
+    }//20有效的括号
+
+    public String removeDuplicates(String s) {
+        ArrayDeque<Character> deque = new ArrayDeque<>();
+        char ch;
+        for(int i = 0;i < s.length();i++ ){
+            ch = s.charAt(i);
+            if(deque.isEmpty() || deque.peek() != ch) deque.push(ch);//不同则压入
+            else  deque.pop();//相同弹出
+        }
+        String str = "";
+        while (!deque.isEmpty()) str = deque.pop() + str;//利用str加法的特性保证不反转
+        return str;
+    }//1047删除字符串的所有相邻重复项
+    /*
+    public String removeDuplicates(String s) {
+        // 将 res 当做栈
+        // 也可以用 StringBuilder 来修改字符串，速度更快
+        // StringBuilder res = new StringBuilder();
+        StringBuffer res = new StringBuffer();
+        // top为 res 的长度
+        int top = -1;
+        for (int i = 0; i < s.length(); i++) {
+            char c = s.charAt(i);
+            // 当 top > 0,即栈中有字符时，当前字符如果和栈中字符相等，弹出栈顶字符，同时 top--
+            if (top >= 0 && res.charAt(top) == c) {
+                res.deleteCharAt(top);
+                top--;
+            // 否则，将该字符 入栈，同时top++
+            } else {
+                res.append(c);
+                top++;
+            }
+        }
+        return res.toString();
+    }
+     */ //1047拿字符串直接作为栈，省去了栈还要转为字符串的操作。
+
+    /*
+      public String removeDuplicates(String s) {
+        // 将 res 当做栈
+        // 也可以用 StringBuilder 来修改字符串，速度更快
+        // StringBuilder res = new StringBuilder();
+        StringBuffer res = new StringBuffer();
+        // top为 res 的长度
+        int top = -1;
+        for (int i = 0; i < s.length(); i++) {
+            char c = s.charAt(i);
+            // 当 top > 0,即栈中有字符时，当前字符如果和栈中字符相等，弹出栈顶字符，同时 top--
+            if (top >= 0 && res.charAt(top) == c) {
+                res.deleteCharAt(top);
+                top--;
+            // 否则，将该字符 入栈，同时top++
+            } else {
+                res.append(c);
+                top++;
+            }
+        }
+        return res.toString();
+    }
+
+     */ //1047拓展：双指针
 
 
     }
