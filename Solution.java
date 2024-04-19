@@ -698,7 +698,7 @@ public class Solution {
         }
         return sb;
     }
-     public void reverseString(StringBuilder sb, int start, int end){
+    public void reverseString(StringBuilder sb, int start, int end){
         while(start < end){
             char tmp = sb.charAt(start);
             sb.setCharAt(start, sb.charAt(end));
@@ -707,7 +707,8 @@ public class Solution {
             end--;
         }
      }
-     private void reverseEachWord(StringBuilder sb){
+
+    private void reverseEachWord(StringBuilder sb){
         int start = 0;
         int end = 1;
         int n = sb.length();
@@ -720,8 +721,43 @@ public class Solution {
             end = start + 1;
         }
      }
+    /*
+import java.util.Scanner;
 
-    
+class Main{
+    public static void main(String[] args){
+        Scanner in = new Scanner(System.in);
+        String s = in.nextLine();
+        StringBuilder sb = new StringBuilder();
+        for(int i = 0 ;i < s.length() ;i++){
+            if(s.charAt(i) >= '0' && s.charAt(i) <= '9'){
+                sb.append("number");
+            }else sb.append(s.charAt(i));
+        }
+        System.out.println(sb);
+    }
+}
+ */ //卡码网54替换数字
+
+    /*
+     import java.util.*;
+
+class Main{
+    public static void main(String[] args){
+        Scanner in = new Scanner(System.in);
+        int k  = in.nextInt();
+        in.nextLine();//读取换行符
+        String s = in.nextLine();
+        int len = s.length();
+        char[] chars = new char[len];
+        StringBuilder sb = new StringBuilder();
+        sb.append(s.substring(len - k , len ));
+        sb.append(s.substring(0, len-k));
+        System.out.println(sb);
+    }
+}
+      */ //卡码网55右旋字符串
+
     public int strStr(String haystack, String needle) {
         if(needle.length() == 0) return 0;
 
@@ -761,7 +797,8 @@ public class Solution {
     }
 
      *///28找出第一个匹配项的下标 库函数版本
-        public boolean repeatedSubstringPattern(String s) {
+
+    public boolean repeatedSubstringPattern(String s) {
         if(s.length() == 1) return false;
 
         int len = s.length();
@@ -859,5 +896,52 @@ public class Solution {
 
      */ //1047拓展：双指针
 
+    public int evalRPN(String[] tokens) {
+        Deque<Integer> stack = new LinkedList<>();
+        for(String s : tokens){
+            if("+".equals(s)) stack.push(stack.poll() + stack.pop());
+            else if("-".equals(s) ) stack.push(-stack.pop() + stack.pop());
+            else if("*".equals(s)) stack.push(stack.pop() * stack.pop());
+            else if("/".equals(s)) {
+                int p1 = stack.pop();
+                int p2 = stack.pop();
+                stack.push(p2 / p1);
+            }else stack.push(Integer.valueOf(s));
+        }
+        return stack.pop();
+    }//150逆波兰表达式求值
+    public int[] maxSlidingWindow(int[] nums, int k) {
+        ArrayDeque<Integer> deque  = new ArrayDeque<>();
+        int n = nums.length;
+        int [] res = new int[n-k+1];
+        int idx = 0;
+        for(int i = 0;i<n;i++){
+            //i是数组下标,在[i,i+k-1]找到最大值并储存
+            //队列头结点需要在i,i+k-1范围内,不在则弹出
+            while (!deque.isEmpty() && deque.peek() < i - k +1) deque.poll();//弹出队列头
+            //保证每次放进去的数字都比末尾的大,否则弹出
+            while(!deque.isEmpty() && nums[deque.peekLast()] < nums[i]) deque.pollLast();
+
+            deque.offer(i);
+            if(i >= k - 1) res[idx++] = nums[deque.peek()];
+
+        }
+        return res;
+    }//239滑动窗口的最大值
 
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
