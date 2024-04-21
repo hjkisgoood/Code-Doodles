@@ -1,5 +1,7 @@
 package bupt;
 
+import sun.reflect.generics.tree.Tree;
+
 import java.util.*;
 
 public class Solution {
@@ -928,6 +930,130 @@ class Main{
         }
         return res;
     }//239滑动窗口的最大值
+    /*
+    public int[] topKFrequent(int[] nums, int k){
+    Map<Integer,Integer> map = new HashMap<>(); //key为数组元素值,val为对应出现次数
+        for (int num : nums) {
+        map.put(num, map.getOrDefault(num,0) + 1);
+    }
+    //在优先队列中存储二元组(num, cnt),cnt表示元素值num在数组中的出现次数
+    //出现次数按从队头到队尾的顺序是从大到小排,出现次数最多的在队头(相当于大顶堆)
+    PriorityQueue<int[]> pq = new PriorityQueue<>((pair1, pair2) -> pair2[1] - pair1[1]);
+        for (Map.Entry<Integer, Integer> entry : map.entrySet()) {//大顶堆需要对所有元素进行排序
+        pq.add(new int[]{entry.getKey(), entry.getValue()});
+    }
+    int[] ans = new int[k];
+        for (int i = 0; i < k; i++) { //依次从队头弹出k个,就是出现频率前k高的元素
+        ans[i] = pq.poll()[0];
+    }
+        return ans;
+    }//347前k个高频元素
+*/  //347前k个高频元素
+    public int[] topKFrequent(int[] nums, int k) {
+        // 优先级队列，为了避免复杂 api 操作，pq 存储数组
+        // lambda 表达式设置优先级队列从大到小存储 o1 - o2 为从小到大，o2 - o1 反之
+        PriorityQueue<int[]> pq = new PriorityQueue<>((o1, o2) -> o1[1] - o2[1]);
+        int[] res = new int[k]; // 答案数组为 k 个元素
+        Map<Integer, Integer> map = new HashMap<>(); // 记录元素出现次数
+        for (int num : nums) map.put(num, map.getOrDefault(num, 0) + 1);
+        for (Map.Entry<Integer, Integer> x : map.entrySet()) { // entrySet 获取 k-v Set 集合
+            // 将 kv 转化成数组
+            int[] tmp = new int[2];
+            tmp[0] = x.getKey();
+            tmp[1] = x.getValue();
+            pq.offer(tmp);
+            // 下面的代码是根据小根堆实现的，我只保留优先队列的最后的k个，只要超出了k我就将最小的弹出，剩余的k个就是答案
+            if(pq.size() > k) {
+                pq.poll();
+            }
+        }
+        for (int i = 0; i < k; i++) {
+            res[i] = pq.poll()[0]; // 获取优先队列里的元素
+        }
+        return res;
+    }
+
+    public List<Integer> preorderTraversal(TreeNode root) {
+        List<Integer> result = new ArrayList<>();
+        //preorderHelp1(root, result);//递归法
+        preorderHelp2(root, result);//迭代法
+        return result;
+    }///144二叉树的前序遍历
+
+    private void preorderHelp1(TreeNode root, List<Integer> list){
+        if(root == null) return;
+        list.add(root.val);
+        preorderHelp1(root.left, list);
+        preorderHelp1(root.right, list);
+    }//递归法前序遍历
+    private void preorderHelp2(TreeNode root, List<Integer> list){
+        Stack<TreeNode> st = new Stack<>();
+        if(root == null) return;
+        st.push(root);
+        while (!st.isEmpty()){
+            TreeNode node = st.pop();
+            list.add(node.val);
+            if(node.right != null) st.push(node.right);
+            if(node.left != null) st.push(node.left);
+        }
+
+    }//迭代法前序遍历
+
+    public List<Integer> postorderTraversal(TreeNode root) {
+        List<Integer> result = new ArrayList<>();
+        //postorderHelp1(root, result);//递归法
+        postorderHelp2(root, result);//迭代法
+        return result;
+    }//145后续遍历
+    private void postorderHelp1(TreeNode root, List<Integer> list){
+        if(root == null) return;
+        postorderHelp1(root.left, list);
+        postorderHelp1(root.right, list);
+        list.add(root.val);
+    }//递归法后序遍历
+
+    private void postorderHelp2(TreeNode root, List<Integer> list){
+        Stack<TreeNode> stack = new Stack<>();
+        if(root == null) return;
+        stack.push(root);
+        while (!stack.isEmpty()){
+            TreeNode node = stack.pop();
+            list.add(node.val);
+            if(node.left != null) stack.push(node.left);
+            if(node.right != null) stack.push(node.right);
+        }
+        Collections.reverse(list);
+    }//迭代法后序遍历
+    public List<Integer> inorderTraversal(TreeNode root) {
+        List<Integer> result = new ArrayList<>();
+        //inorderHelp1(root, result);//递归法
+        inorderHelp2(root, result);//迭代法
+        return result;
+
+    }//94二叉树的中序遍历
+    private void inorderHelp1(TreeNode root, List<Integer> list){
+        if(root == null) return;
+        inorderHelp1(root.left, list);
+        list.add(root.val);
+        inorderHelp1(root.right, list);
+    }//递归法中序遍历
+    private void inorderHelp2(TreeNode root, List<Integer> list){
+        Stack<TreeNode> st = new Stack<>();
+        if(root == null) return;
+        TreeNode cur = root;
+        while (cur != null || !st.isEmpty()){
+            if(cur != null){
+                st.push(cur);
+                cur = cur.left;
+            }else {
+                cur = st.pop();
+                list.add(cur.val);
+                cur = cur.right;
+            }
+        }
+
+    }//迭代法中序遍历
+
 
     }
 
