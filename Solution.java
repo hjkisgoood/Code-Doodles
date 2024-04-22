@@ -976,7 +976,8 @@ class Main{
     public List<Integer> preorderTraversal(TreeNode root) {
         List<Integer> result = new ArrayList<>();
         //preorderHelp1(root, result);//递归法
-        preorderHelp2(root, result);//迭代法
+        //preorderHelp2(root, result);//迭代法
+        preorderHelp3(root, result);//统一迭代法
         return result;
     }///144二叉树的前序遍历
 
@@ -998,11 +999,29 @@ class Main{
         }
 
     }//迭代法前序遍历
+    private void preorderHelp3(TreeNode root, List<Integer> list){
+        Stack<TreeNode> st = new Stack<>();
+        if(root == null) return;
+        st.push(root);
+        while (!st.isEmpty()){
+            TreeNode node = st.pop();
+            if(node != null){
+                if(node.right !=null) st.push(node.right);
+                if(node.left != null) st.push(node.left);
+                st.push(node);
+                st.push(null);
+            }else {
+                node = st.pop();
+                list.add(node.val);
+            }
+        }
+    }//统一迭代法前序遍历
 
     public List<Integer> postorderTraversal(TreeNode root) {
         List<Integer> result = new ArrayList<>();
         //postorderHelp1(root, result);//递归法
-        postorderHelp2(root, result);//迭代法
+        //postorderHelp2(root, result);//迭代法
+        postorderHelp3(root, result);//统一迭代法
         return result;
     }//145后续遍历
     private void postorderHelp1(TreeNode root, List<Integer> list){
@@ -1024,10 +1043,31 @@ class Main{
         }
         Collections.reverse(list);
     }//迭代法后序遍历
+    private void postorderHelp3(TreeNode root, List<Integer> list){
+        Stack<TreeNode> st = new Stack<>();
+        if(root == null) return;
+        st.push(root);
+        while (!st.isEmpty()){
+            TreeNode node = st.pop();
+            if(node != null){
+                st.push(node);
+                st.push(null);//
+                if(node.right !=null) st.push(node.right);
+                if(node.left != null) st.push(node.left);
+
+            }else {
+                node = st.pop();
+                list.add(node.val);
+            }
+        }
+    }//统一迭代法
+
     public List<Integer> inorderTraversal(TreeNode root) {
         List<Integer> result = new ArrayList<>();
         //inorderHelp1(root, result);//递归法
-        inorderHelp2(root, result);//迭代法
+        //inorderHelp2(root, result);//迭代法
+        inorderHelp3(root, result);//统一迭代法
+
         return result;
 
     }//94二叉树的中序遍历
@@ -1053,7 +1093,23 @@ class Main{
         }
 
     }//迭代法中序遍历
-
+    private void inorderHelp3(TreeNode root, List<Integer> list){
+        Stack<TreeNode> st = new Stack<>();
+        if(root == null) return;
+        st.push(root);
+        while (!st.isEmpty()){
+            TreeNode node = st.pop();
+            if(node != null){
+                if(node.right !=null) st.push(node.right);
+                st.push(node);
+                st.push(null);
+                if(node.left != null) st.push(node.left);
+            }else {
+                node = st.pop();
+                list.add(node.val);
+            }
+        }
+    }//统一迭代法中序遍历
 
     }
 
