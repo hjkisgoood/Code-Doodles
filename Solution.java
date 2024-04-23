@@ -1111,6 +1111,83 @@ class Main{
         }
     }//统一迭代法中序遍历
 
+
+    public List<List<Integer>> levelOrder(TreeNode root) {
+        List<List<Integer>> res = new ArrayList<>();
+        levelOrderHelp1(root, 0, res);//递归法
+        //levelOrderHelp2(root, res);//迭代法
+        return res;
+    }//102二叉树的层序遍历1
+    private void levelOrderHelp1(TreeNode root, int deep, List<List<Integer>> res){
+        if(root == null) return;
+        Queue<TreeNode> que = new LinkedList<>();
+        deep++;
+        if(res.size() < deep){
+            List<Integer> tempList = new ArrayList<>();
+            res.add(tempList);
+        }
+        res.get(deep - 1).add(root.val);
+        levelOrderHelp1(root.left, deep, res);
+        levelOrderHelp1(root.right, deep, res);
+    }//DFS--递归法
+    private void levelOrderHelp2(TreeNode root, List<List<Integer>> res){
+        if(root == null) return;
+        Queue<TreeNode> que = new LinkedList<TreeNode>();
+        que.offer(root);
+        while(!que.isEmpty()){
+            List<Integer> temList = new ArrayList<>();
+            int len = que.size();
+            for(int i = 0; i < len; i++){
+                TreeNode tempNode = que.poll();
+                temList.add(tempNode.val);
+                if(tempNode.left != null) que.offer(tempNode.left);
+                if(tempNode.right != null) que.offer(tempNode.right);
+            }
+            res.add(temList);
+        }
+    }//迭代法层序遍历
+    public List<List<Integer>> levelOrderBottom(TreeNode root) {
+        List<List<Integer>> res = levelOrder(root);
+        Collections.reverse(res);
+        return res;
+    }//107二叉树的层序遍历2
+    public List<Integer> rightSideView(TreeNode root) {
+        //解法一调用102层序遍历方法每次取list最后一个元素就行
+        //解法2
+        List<Integer> list = new ArrayList<>();
+        Queue<TreeNode> que = new LinkedList<>();
+        if(root == null) return list;
+        que.offer(root);
+        while (!que.isEmpty()){
+            int lever = que.size();
+            for(int i = 0;i < lever;i++){
+                TreeNode poll = que.poll();
+                if(poll.left != null) que.offer(poll.left);
+                if(poll.right != null) que.offer(poll.right);
+
+                if(i == lever-1)
+                    list.add((poll.val));
+            }
+        }
+        return list;
+     }//199二叉树的右视图
+    public List<Double> averageOfLevels(TreeNode root) {
+        List<List<Integer>> list = levelOrder(root);
+        List<Double> res = new ArrayList<>();
+        for(List<Integer> temp: list){
+            int sum = 0;
+            int len = 0;
+            for(int i : temp){
+                sum+=i;
+                len++;
+            }
+
+            double avRes = sum/(double)len;
+            res.add(avRes);
+        }
+        return res;
+    }//637二叉树的层平均值
+
     }
 
 
