@@ -1175,7 +1175,7 @@ class Main{
         List<List<Integer>> list = levelOrder(root);
         List<Double> res = new ArrayList<>();
         for(List<Integer> temp: list){
-            int sum = 0;
+            double sum = 0;
             int len = 0;
             for(int i : temp){
                 sum+=i;
@@ -1188,7 +1188,176 @@ class Main{
         return res;
     }//637二叉树的层平均值
 
+    private class Node {
+        public int val;
+        public Node left;
+        public Node right;
+        public Node next;
+        public List<Node> children;
+
+        public Node() {}
+
+        public Node(int _val) {
+            val = _val;
+        }
+
+        public Node(int _val, List<Node> _children) {
+            val = _val;
+            children = _children;
+        }
+        public Node(int _val, Node _left, Node _right, Node _next) {
+            val = _val;
+            left = _left;
+            right = _right;
+            next = _next;
+        }
+    }//n叉树的定义与带next指针二叉树合二为一的
+    public List<List<Integer>> levelOrder(Node root) {
+        List<List<Integer>> res = new ArrayList<>();
+        Queue<Node> que = new LinkedList<>();
+        if(root == null) return res;
+        que.offer(root);
+
+        while (!que.isEmpty()){
+            int lever = que.size();
+            List<Integer> leverList = new ArrayList<>();
+
+            for(int i = 0;i < lever;i++){
+                Node tempNode = que.poll();
+                leverList.add(tempNode.val);
+                for(Node child : tempNode.children){
+                    if(child != null) que.offer(child);
+                }
+            }
+            res.add(leverList);
+        }
+        return res;
+    }//迭代法n叉树层序遍历
+    //429.N叉树的层序遍历
+    public List<Integer> largestValues(TreeNode root) {
+        List<Integer> res = new ArrayList<>();
+        Queue<TreeNode> que = new LinkedList<>();
+        if(root == null) return res;
+        que.offer(root);
+        while (!que.isEmpty()){
+            int max = Integer.MIN_VALUE;//
+            for(int i =que.size();i>0;i--){
+                TreeNode node = que.poll();
+                max = Math.max(max, node.val);
+                if(node.left != null) que.offer(node.left);
+                if(node.right != null) que.offer(node.right);
+            }
+            res.add(max);
+        }
+        return res;
+    }//515在每个树行中找最大值
+
+
+    public Node connect(Node root) {
+        Queue<Node> que = new LinkedList<>();
+        if(root == null) return root;
+        que.offer(root);
+
+        while(!que.isEmpty()){
+            Node cur = que.poll();
+            int size = que.size();
+            if(cur.left != null) que.offer(cur.left);
+            if(cur.right != null) que.offer(cur.right);
+
+            for(int i = 0;i < size ;i++){
+                Node next = que.poll();
+                cur.next = next;
+                cur = next;//当前节点指向兄弟节点并且往后移动一格
+                if(cur.left != null) que.offer(cur.left);
+                if(cur.right != null) que.offer(cur.right);
+            }
+        }
+        return  root;
+    }//116.填充每个节点的下一个右侧节点指针一
+    /*public Node connect(Node root) {
+        Queue<Node> que = new LinkedList<>();
+        if(root == null) return root;
+        que.offer(root);
+
+        while(!que.isEmpty()){
+            Node cur = que.poll();
+            int size = que.size();
+            if(cur.left != null) que.offer(cur.left);
+            if(cur.right != null) que.offer(cur.right);
+
+            for(int i = 0;i < size ;i++){
+                Node next = que.poll();
+                cur.next = next;
+                cur = next;//当前节点指向兄弟节点并且往后移动一格
+                if(cur.left != null) que.offer(cur.left);
+                if(cur.right != null) que.offer(cur.right);
+            }
+        }
+        return  root;
+    }*///117.填充每个节点的下一个右侧节点指针II
+    //与116代码一模一样注释一下
+    public int maxDepth(TreeNode root) {
+        Queue<TreeNode> que = new LinkedList<>();
+        int depth = 0;
+        if(root == null) return depth;
+        que.offer(root);
+        while (!que.isEmpty()){
+            depth++;
+            for(int i = que.size();i > 0; i--){
+                TreeNode node = que.poll();
+                if(node.left != null) que.offer(node.left);
+                if(node.right != null) que.offer(node.right);
+            }
+        }
+        return depth;
+    }//102二叉树的最大深度
+    public int minDepth(TreeNode root) {
+        Queue<TreeNode> que = new LinkedList<>();
+        int depth = 0;
+        if(root == null) return depth;
+        que.offer(root);
+        while (!que.isEmpty()){
+            depth++;
+            for(int i = que.size();i > 0; i--){
+                TreeNode node = que.poll();
+                if(node.left == null && node.right == null) return depth;
+                if(node.left != null) que.offer(node.left);
+                if(node.right != null) que.offer(node.right);
+            }
+        }
+        return depth;
+    }//111.二叉树的最小深度
+    public TreeNode invertTree(TreeNode root) {
+        //invertTreeHelp1(root);//层序遍历解决
+        invertTreeHelp2(root);//递归法
+        return root;
+    }//226.翻转二叉树
+    private void invertTreeSwap(TreeNode root){
+        TreeNode temp = root.left;
+        root.left = root.right;
+        root.right = temp;
+    }//交换节点左右节点
+    private void invertTreeHelp1(TreeNode root){
+        Queue<TreeNode> que = new LinkedList<>();
+        if(root == null) return;
+        que.offer(root);
+        while (!que.isEmpty()){
+            TreeNode node = que.poll();
+            invertTreeSwap(node);
+            if(node.left != null) que.offer(node.left);
+            if(node.right != null) que.offer(node.right);
+        }
+    }//层序遍历法
+    private void invertTreeHelp2(TreeNode root){
+        if(root == null) return;
+        invertTreeSwap(root);
+        invertTreeHelp2(root.left);
+        invertTreeHelp2(root.right);
     }
+
+
+
+}
 
 
 
