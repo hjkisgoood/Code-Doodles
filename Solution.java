@@ -1354,8 +1354,120 @@ class Main{
         invertTreeHelp2(root.left);
         invertTreeHelp2(root.right);
     }
+    public boolean isSymmetric(TreeNode root){
+        if(root == null) return true;
+        //return isSymmetricHelp1(root.left, root.right);
+        return isSymmetricHelp2(root);
+    }
+    //101对称二叉树
+    private boolean isSymmetricHelp1(TreeNode left, TreeNode right){
+        if(left == null && right == null) return true;
+        else if(left == null && right != null) return false;
+        else if(left != null && right ==null) return false;
+        else if(left.val != right.val) return false;
+        //比较左节点的左,右节点的右,
+        // 比较左节点的右,右节点的左
+        // 对称比较
+        return isSymmetricHelp1(left.left, right.right) && isSymmetricHelp1(left.right, right.left);
+    }//递归法
+    private boolean isSymmetricHelp2(TreeNode root){
+        Queue<TreeNode> que = new LinkedList<>();
+        que.offer(root.left);
+        que.offer(root.right);
+        while (!que.isEmpty()){
+            TreeNode lNode = que.poll();
+            TreeNode rNode = que.poll();
+            if(lNode == null && rNode == null) continue;
+            if(lNode == null || rNode == null || lNode.val != rNode.val) return false;
 
+            que.offer(lNode.left);
+            que.offer(rNode.right);
+            que.offer(lNode.right);
+            que.offer(rNode.left);
+        }
+        return true;
+    }//迭代法
+    public boolean isSameTree(TreeNode p, TreeNode q) {
+        Queue<TreeNode> que = new LinkedList<>();
+        que.offer(p);
+        que.offer(q);
+        if(q == null && p == null) return true;
+        while (!que.isEmpty()){
+            TreeNode left = que.poll();
+            TreeNode right = que.poll();
+            if(left == null && right == null) continue;
+            if(left == null || right == null || left.val != right.val) return false;
+            //System.out.println("test");
+            que.offer(left.left);
+            que.offer(right.left);
+            que.offer(left.right);
+            que.offer(right.right);
+        }
+        return true;
+    }//100相同的树
+    public boolean isSubtree(TreeNode root, TreeNode subRoot) {
+        Queue<TreeNode> que = new LinkedList<>();
+        que.offer(root);
+        while (!que.isEmpty()){
+            TreeNode node = que.poll();
+            boolean trueOrNot = isSameTree(node, subRoot);
+            if(trueOrNot) return true;
+            if(node.left != null) que.offer(node.left);
+            if(node.right != null) que.offer(node.right);
 
+        }
+        return false;
+    }//572相同的zishu
+    public int maxDepth(Node root) {
+        if(root == null) return 0;
+        Queue<Node> que = new LinkedList<>();
+        que.offer(root);
+        int depth = 0;
+        while (!que.isEmpty()){
+            for(int i = que.size();i>0;i--){
+                Node node = que.poll();
+                for(Node child : node.children) que.offer(child);
+            }
+            depth++;
+        }
+        return depth;
+    }//559.n叉树的最大深度(opens new window)
+    public int countNodes(TreeNode root) {
+        if(root == null) return 0;
+        int leftCnt = countNodes(root.left);
+        int rightCnt = countNodes(root.right);
+        return leftCnt + rightCnt+1;
+    }//222.完全二叉树的节点个数/递归法
+    public boolean isBalanced(TreeNode root) {
+        //return isBalancedHelp1(root);//层序遍历调函数法,时间复杂度高
+        return isBalancedHelp2(root) != -1;
+    }//110.平衡二叉树
+    private boolean isBalancedHelp1(TreeNode root){
+        Stack<TreeNode> st = new Stack<>();
+        if(root == null) return true;
+        st.push(root);
+        while (!st.isEmpty()){
+            TreeNode node = st.pop();
+            int lDepth = maxDepth(node.left);
+            int rDepth = maxDepth(node.right);
+            int level = lDepth - rDepth;
+            if(level > 1 || level < -1) return false;
+            if(node.left != null) st.push(node.left);
+            if(node.right != null) st.push(node.right);
+        }
+        return true;
+    }//层序遍历调函数法,时间复杂度高
+    private int isBalancedHelp2(TreeNode root){
+        if(root == null) return 0;
+        int leftH = isBalancedHelp2(root.left);
+        if(leftH == -1) return -1;
+        int rightH = isBalancedHelp2(root.right);
+        if(rightH == -1) return -1;
+        //判断左右zishu高度差
+        if(Math.abs(leftH - rightH) > 1) return -1;
+        return Math.max(leftH, rightH) + 1;
+
+    }
 
 }
 
