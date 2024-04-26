@@ -1469,7 +1469,82 @@ class Main{
 
     }
 
-}
+    public List<String> binaryTreePaths(TreeNode root) {
+        //return binaryTreePathsHelp1(root);//回溯法1
+        //return binaryTreePathsHelp2(root);//回溯法2
+        return binaryTreePathsHelp3(root);//迭代法
+    }//257. 二叉树的所有路径
+    private List<String> binaryTreePathsHelp1(TreeNode root){
+        List<String> res = new ArrayList<>();
+        if(root == null) return res;
+        List<Integer> paths = new ArrayList<>();
+        binaryTreePathsHelp1Help(root, paths, res);
+        return res;
+    }//递归法1
+    private void binaryTreePathsHelp1Help(TreeNode root, List<Integer> paths, List<String> res){
+        paths.add(root.val);//前序遍历,中
+        if(root.left == null && root.right == null){
+            StringBuilder sb = new StringBuilder();
+            for(int i =0;i < paths.size() - 1;i++){
+                sb.append(paths.get(i)).append("->");
+            }
+            sb.append(paths.get(paths.size() - 1));//加入最后一个节点
+            res.add(sb.toString());//加入路径
+        }
+        //递归与回溯
+        if(root.left != null){//左
+            binaryTreePathsHelp1Help(root.left, paths, res);
+            paths.remove(paths.size() - 1 );//回溯
+        }
+        if(root.right != null){//右
+            binaryTreePathsHelp1Help(root.right, paths, res);
+            paths.remove(paths.size() - 1);
+        }
+    }
+
+    private List<String> binaryTreePathsHelp2(TreeNode root){
+        List<String> result = new ArrayList<>();
+        binaryTreePathsHelp2Help(root, "", result);
+        return result;
+    }//回溯法二
+
+    private void binaryTreePathsHelp2Help(TreeNode node, String s, List<String> result){
+        if(node == null) return;
+        if(node.left == null && node.right == null){
+            result.add(new StringBuilder(s).append(node.val).toString());
+            return;
+        }
+        String tmp = new StringBuilder(s).append(node.val).append("->").toString();
+        binaryTreePathsHelp2Help(node.left, tmp, result);
+        binaryTreePathsHelp2Help(node.right, tmp ,result);
+    }
+
+    private List<String> binaryTreePathsHelp3(TreeNode root){
+        List<String> res = new ArrayList<>();
+        if(root == null){
+            return res;
+        }
+        Stack<Object> st = new Stack<>();
+        st.push(root);
+        st.push(root.val + "");
+        while (!st.isEmpty()){
+            String path = (String) st.pop();
+            TreeNode node = (TreeNode) st.pop();
+            // 遇到叶子节点
+            if(node.left == null && node.right ==null){
+                res.add(path);
+            }
+            if(node.right != null){
+                st.push(node.right);
+                st.push(path + "->" + node.right.val);
+            }
+            if(node.left != null){
+                st.push(node.left);
+                st.push(path + "->" + node.left.val);
+            }
+        }
+        return res;
+    }//迭代法
 
 
 
@@ -1482,6 +1557,25 @@ class Main{
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    }
 
 
 
