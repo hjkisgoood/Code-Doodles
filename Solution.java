@@ -1576,6 +1576,23 @@ class Main{
         return result;
     }//迭代法
 
+    public int findBottomLeftValue(TreeNode root) {
+        Queue<TreeNode> que = new LinkedList<>();
+        int result = root.val;
+        que.offer(root);
+        while (!que.isEmpty()){
+            result = que.peek().val;
+            for(int i = que.size();i > 0;i--){
+                TreeNode node = que.poll();
+                if(node.left != null) que.offer(node.left);
+                if(node.right != null) que.offer(node.right);
+            }
+
+        }
+        return result;
+
+    }//513找树左下角的值
+    //迭代法
 
 
 
