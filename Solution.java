@@ -1547,8 +1547,34 @@ class Main{
     }//迭代法
 
 
+    public int sumOfLeftLeaves(TreeNode root) {
+        //return sumOfLeftLeavesHelp1(root);//递归法
+        return sumOfLeftLeavesHelp2(root);//迭代法法
+    }//404左叶子之和
+    private int sumOfLeftLeavesHelp1(TreeNode root){
+        if(root == null) return 0;
+        int left = sumOfLeftLeavesHelp1(root.left);
+        int right = sumOfLeftLeaves(root.right);
+        int mid = 0;
+        if(root.left != null && root.left.left == null && root.left.right == null) mid = root.left.val;
 
+        int sum = left + right + mid;
+        return sum;
+    }//递归法
+    private int sumOfLeftLeavesHelp2(TreeNode root){
+        if(root == null) return 0;
+        Stack<TreeNode> st = new Stack<>();
+        int result = 0;
+        st.push(root);
+        while (!st.isEmpty()) {
+            TreeNode node = st.pop();
+            if (node.left != null && node.left.left == null && node.left.right == null) result += node.left.val;
 
+            if (node.right != null) st.push(node.right);
+            if (node.left != null) st.push(node.left);
+        }
+        return result;
+    }//迭代法
 
 
 
