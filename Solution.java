@@ -1,7 +1,9 @@
 package bupt;
 
+import jdk.nashorn.internal.runtime.PrototypeObject;
 import sun.reflect.generics.tree.Tree;
 
+import javax.swing.*;
 import java.util.*;
 
 public class Solution {
@@ -1594,9 +1596,88 @@ class Main{
     }//513找树左下角的值
     //迭代法
 
+    public boolean hasPathSum(TreeNode root, int targetSum) {
+        if(root == null) return false;
+        //return hasPathSumHelp1(root, targetSum - root.val);递归法
+        return hasPathSumHelp2(root, targetSum);//迭代法
+
+    }//112路径之和
+    private boolean hasPathSumHelp1(TreeNode node, int count){
+        if(node.left == null && node.right == null && count == 0) return true;
+        if(node.left == null && node.right == null && count != 0) return false;
+
+        if(node.left != null) {
+            count -= node.left.val;
+            if(hasPathSumHelp1(node.left, count)) return true;
+            count += node.left.val;
+        }
+        if(node.right != null){
+            count -= node.right.val;
+            if(hasPathSumHelp1(node.right, count)) return true;
+            count += node.right.val;
+        }
+         return false;
+    }//递归法
+
+    private boolean hasPathSumHelp2(TreeNode root, int target){
+        Stack<TreeNode> st1 = new Stack<>();
+        Stack<Integer> st2 = new Stack<>();
+        st1.push(root);
+        st2.push(root.val);
+
+        while (!st1.isEmpty()){
+            TreeNode node = st1.pop();
+            int curCount = st2.pop();
+            //如果是叶子
+            if(node.left == null && node.right == null && curCount == target) return true;
+            //不是叶子则压入
+            if(node.right != null){//右
+                st1.push(node.right);
+                st2.push(node.right.val + curCount);
+            }
+            if(node.left != null){//左
+                st1.push(node.left);
+                st2.push(node.left.val + curCount);
+            }
 
 
+        }
+        return false;
+    }//迭代法
 
+    public List<List<Integer>> pathSum(TreeNode root, int targetSum) {
+        List<List<Integer>> res = new ArrayList<>();
+        if(root == null) return res;
+
+        List<Integer> path = new ArrayList<>();
+        pathSumHelp(root, targetSum, res, path);
+        return res;
+    }//113. 路径总和ii
+
+    private void pathSumHelp(TreeNode node, int target, List<List<Integer>> res, List<Integer> path){
+        path.add(node.val);
+        //遇到了叶子节点
+        if(node.left == null && node.right == null){
+            if(target - node.val == 0) {
+                //res.add(path);//这是不行的因为java存的是引用之后回溯删除path内容,res里面也会跟着删除
+                res.add(new ArrayList<>(path));
+            }
+           /* for(List<Integer> List : res){
+                for(int i : path){
+                    System.out.println(i);
+                }
+            }*/
+            return;//叶子路径不合适则回溯,合适则返回
+        }
+        if(node.left != null){
+            pathSumHelp(node.left, target - node.val, res, path);
+            path.remove(path.size() - 1);//回溯
+        }
+        if(node.right != null){
+            pathSumHelp(node.right, target - node.val, res, path);
+            path.remove(path.size() - 1);//回溯
+        }
+    }//回溯法
 
 
 
