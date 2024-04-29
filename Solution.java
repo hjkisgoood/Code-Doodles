@@ -1680,11 +1680,24 @@ class Main{
     }//回溯法
 
 
+    public TreeNode buildTree(int[] inorder, int[] postorder) {
+        Map<Integer, Integer> map = new HashMap<>();
+        for(int i = 0;i < inorder.length; i++){
+            map.put(inorder[i], i);//map存中序数值位置
+        }
+        return buildTreeHelp1(inorder, 0, inorder.length, postorder, 0, postorder.length, map);
 
-
-
-
-
+    }//106.从中序与后序遍历序列构造二叉树
+    private TreeNode buildTreeHelp1(int[] inorder, int inBegin, int inEnd, int[] postorder, int poBegin, int poEnd, Map<Integer, Integer> map){
+        //左闭右开区间
+        if(inBegin >= inEnd || poBegin >= poEnd) return null;//不满足左闭右开
+        int rootIndex = map.get(postorder[poEnd - 1]);//找到后序遍历的最后一个元素在中序遍历中的位置
+        TreeNode root = new TreeNode(inorder[rootIndex]);//构造节点
+        int lenOfLeft = rootIndex - inBegin;//保存中序左子树个数,用来区分后序遍历左右子树长度
+        root.left = buildTreeHelp1(inorder, inBegin, rootIndex, postorder, poBegin, poBegin + lenOfLeft, map);
+        root.right = buildTreeHelp1(inorder, rootIndex+1, inEnd, postorder, poBegin + lenOfLeft, poEnd-1, map);
+        return root;
+    }//中序后序遍历构造二叉树
 
 
 
@@ -1700,6 +1713,4 @@ class Main{
 
 
     }
-
-
 
