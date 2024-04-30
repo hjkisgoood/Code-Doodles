@@ -1701,11 +1701,71 @@ class Main{
 
 
 
+    public TreeNode constructMaximumBinaryTree(int[] nums) {
+        return constructMaximumBinaryTreeHelp(nums, 0, nums.length);
 
+    }//654最大二叉树
+    private TreeNode constructMaximumBinaryTreeHelp(int[] nums, int left, int right){
+        if(right - left < 1) return null;//没有元素
+        if(right - left == 1) return new TreeNode(nums[left]);//只有一个元素
+        int maxIndex = 0;
+        int maxVal = 0;
+        for(int i = left;i<right;i++){
+            if(nums[i] > maxVal){
+                maxVal = nums[i];
+                maxIndex = i;
+            }
+        }
+        TreeNode node = new TreeNode(maxVal);
+        //在max的左右两侧划分子树
+        node.left = constructMaximumBinaryTreeHelp(nums, left, maxIndex);
+        node.right = constructMaximumBinaryTreeHelp(nums, maxIndex + 1, right);
+        return node;
 
+    }
 
+    public TreeNode mergeTrees(TreeNode root1, TreeNode root2) {
+        return  mergeTreesHelp1(root1, root2);
 
+    }//617.合并二叉树
 
+    private TreeNode mergeTreesHelp1(TreeNode node1, TreeNode node2){
+        if(node1 == null) return node2;
+        if(node2 == null) return node1;
+        node1.val+= node2.val;
+        node1.left = mergeTreesHelp1(node1.left, node2.left);
+        node1.right = mergeTreesHelp1(node1.right, node2.right);
+        return node1;
+    }//递归法
+
+    public TreeNode searchBST(TreeNode root, int val) {
+        while (root != null){
+            if(root.val == val) return root;
+            else if(root.val < val) root = root.right;
+            else root = root.left;
+        }
+        return null;
+    }//700二叉搜索树中的搜索
+
+    public boolean isValidBST(TreeNode root) {
+        Queue<Integer> que = new LinkedList<>();
+        isValidBSTHelp1(root, que);
+        int before = que.poll();
+        while (!que.isEmpty()){
+            int cur = que.poll();
+            if(cur <= before) return false;
+            before = cur;
+        }
+        return true;
+
+    }//98验证二叉搜索树
+    //将二叉搜索树塞入一个数组
+    private void isValidBSTHelp1(TreeNode root, Queue<Integer> que){
+        if(root == null) return;
+        isValidBSTHelp1(root.left, que);
+        que.offer(root.val);
+        isValidBSTHelp1(root.right, que);
+    }
 
 
 
