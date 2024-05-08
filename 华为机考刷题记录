@@ -1,0 +1,89 @@
+import java.util.Scanner;
+
+// 按两次 Shift 打开“随处搜索”对话框并输入 `show whitespaces`，
+// 然后按 Enter 键。现在，您可以在代码中看到空格字符。
+public class Main {
+    static int x=0;
+    static int y=0;
+    public static void main(String[] args) {
+        // 当文本光标位于高亮显示的文本处时按 Alt+Enter，
+        // 可查看 IntelliJ IDEA 对于如何修正该问题的建议。
+        Scanner in = new Scanner(System.in);
+        String s = in.nextLine();
+        char[] sChar = s.toCharArray();
+        for(int i = 0;i<s.length();i++){
+            char ch1 = sChar[i];
+            int move = 0;
+            if(ch1 =='A' || ch1 == 'S' ||ch1 == 'W' || ch1 == 'D'){//是4个移动符号则进入判断
+                i++;
+                if(sChar[i] <= '9' && sChar[i] >= '0'){//第一个数字为0-9
+                    move += sChar[i] - '0';
+                    i++;
+                    if(sChar[i] <= '9' && sChar[i] >= '0'){
+                        move = move * 10 + sChar[i] - '0';
+                        i++;
+                        if(sChar[i] == ';') {//下一个输入合法则移动
+                            helpMove(ch1, move);
+                        }
+                    }else if(sChar[i] == ';') {//考虑只有一个数字的情况
+                        helpMove(ch1, move);
+                    }
+                }else {//第一个数字不为0-9则跳到下一个;号
+                    while (sChar[i] != ';') i++;
+                    continue;
+                }
+
+            }else {
+                while (sChar[i] != ';') i++;
+                continue;
+            }
+
+        }
+        System.out.println(x+","+y);
+
+
+    }
+    private static void helpMove(char ch1, int move){
+        if(ch1 == 'A') x -= move;
+        else if (ch1 == 'D') x += move;
+        else if(ch1 == 'W') y += move;
+        else if(ch1 == 'S') y -= move;
+        //System.out.print(ch1+" ");
+        //System.out.println(move);
+            return;
+        }
+    }
+
+
+
+
+/*
+        Scanner in = new Scanner(System.in);
+
+        String s = in.nextLine();
+        System.out.println(s);
+        StringBuilder sb = new StringBuilder(s);
+        int lenth = s.length();
+        char[] sChar = s.toCharArray();
+        int index = 0;
+        for(int i = 0 ;i < lenth;i++){
+            if(sChar[i] == ' ') index = i;
+        }
+        if(index == 0) System.out.println(lenth);
+        System.out.println(lenth - index - 1);
+        // 按 Shift+F10 或点击装订区域中的绿色箭头按钮以运行脚本。
+*///牛客第一题
+/*
+  Scanner in = new Scanner(System.in);
+        String s1 = in.nextLine();
+        char s2 = in.next().charAt(0);
+        int count = 0;
+        int s2Number ;
+        if(s2 <= 'Z' & s2 >= 'A') s2Number = s2 -'A';
+        else s2Number = s2 - 'a';
+        System.out.println(s2Number);
+        for(char ch : s1.toCharArray()){
+            if (ch - 'a' == s2Number|| ch - 'A' == s2Number) count++;
+        }
+        System.out.println(count);
+* *///牛客第二题
