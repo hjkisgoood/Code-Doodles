@@ -1767,7 +1767,72 @@ class Main{
         isValidBSTHelp1(root.right, que);
     }
 
+    public int getMinimumDifference(TreeNode root) {
+        Stack<TreeNode> st =new Stack<>();
+        TreeNode pre = null;
+        int res = Integer.MAX_VALUE;
 
+        if(root == null) return res;
+        st.push(root);
+        while (!st.isEmpty()){
+            TreeNode cur = st.pop();
+            if(cur != null){
+                if(cur.right!=null) st.push(cur.right);
+                st.push(cur);
+                st.push(null);
+                if(cur.left != null) st.push(cur.left);
+            }else {
+                TreeNode tem = st.pop();
+                if(pre!= null) res = Math.min(res, tem.val - pre.val);
+                pre = tem;
+            }
+        }
+        return res;
+    }//530二叉搜索树的最小绝对差
+    //统一迭代法
+    public int[] findMode(TreeNode root) {
+        int count = 0;
+        int maxCount = 0;
+        Map<Integer, Integer> map = new HashMap<>();
+        List<Integer> list = new ArrayList<>();
+        findModeHelp(root, map);
+        for(int key : map.keySet()){
+            int val = map.get(key);
+           if(val > maxCount){
+               maxCount = val;
+               list.clear();
+               list.add(key);
+           }else if(val == maxCount) {
+               list.add(key);
+           }
+        }
+        int[] res = new int [list.size()];
+        for(int i = 0;i<res.length;i++){
+            res[i] = list.get(i);
+        }
+        return res;
+
+
+    }//501.二叉搜索树中的众数
+    private void findModeHelp(TreeNode root, Map<Integer, Integer> map){
+        if(root == null) return;
+        map.put(root.val, map.getOrDefault(root.val, 0) + 1);
+        findModeHelp(root.left, map);
+        findModeHelp(root.right, map);
+    }
+
+    public TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {
+        if(root == null || root == p || root == q){
+            return root;
+        }
+        //后序遍历
+        TreeNode left = lowestCommonAncestor(root.left, p, q);
+        TreeNode right = lowestCommonAncestor(root.right, p, q);
+        if(left == null && right ==null) return null;
+        else if (left != null && right ==null) return left;
+        else if(left == null && right != null) return right;
+        else return root;
+    }//236. 二叉树的最近公共祖先//235. 二叉搜索树的最近公共祖先
 
 
 
