@@ -1834,6 +1834,31 @@ class Main{
         else return root;
     }//236. 二叉树的最近公共祖先//235. 二叉搜索树的最近公共祖先
 
+    public TreeNode insertIntoBST(TreeNode root, int val) {
+         if(root == null) return new TreeNode(val);
+
+         if(root.val < val) root.right = insertIntoBST(root.right, val);
+         else if(root.val > val) root.left = insertIntoBST(root.left, val);
+         return root;
+
+    }//701二叉搜索树中的插入操作
+    public TreeNode deleteNode(TreeNode root, int key) {
+        if(root == null) return root;
+        if(root.val == key){
+            if(root.left == null) return root.right;
+            else if(root.right == null) return root.left;
+            else {
+                TreeNode cur = root.right;
+                while (cur.left != null) cur = cur.left;
+
+                cur.left = root.left;
+                return root.right;
+            }
+        }
+        if(root.val > key) root.left =deleteNode(root.left, key);
+        if(root.val < key) root.right = deleteNode(root.right, key);
+        return root;
+    }//450删除二叉搜索树中的节点
 
 
 
