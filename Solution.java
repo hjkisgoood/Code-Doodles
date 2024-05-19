@@ -1859,7 +1859,50 @@ class Main{
         if(root.val < key) root.right = deleteNode(root.right, key);
         return root;
     }//450删除二叉搜索树中的节点
+    public TreeNode trimBST(TreeNode root, int low, int high) {
+        if(root == null) return null;
+        if(root.val < low) return trimBST(root.right, low, high);
+        if(root.val > high) return trimBST(root.left, low, high);
 
+        root.left = trimBST(root.left, low ,high);
+        root.right = trimBST(root.right ,low , high);
+
+        return root;
+    }//669修建二叉搜索树
+    public TreeNode sortedArrayToBST(int[] nums) {
+        return sortedArrayToBSTHelp(nums, 0, nums.length);//左闭右开
+    }//108将有序数组转换为二叉搜索树
+    private TreeNode sortedArrayToBSTHelp(int[] nums, int left, int right){
+        if(left >= right) return null;
+
+        int mid = left + (right - left)/2;
+        TreeNode root = new TreeNode(nums[mid]);
+        root.left = sortedArrayToBSTHelp(nums, left, mid);
+        root.right = sortedArrayToBSTHelp(nums, mid+1, right);
+        return root;
+    }
+    public TreeNode convertBST(TreeNode root) {
+        int pre = 0;
+        Stack<TreeNode> st = new Stack<>();
+        if(root == null) return null;
+
+        st.push(root);
+        while (!st.isEmpty()){
+            TreeNode cur = st.pop();
+            if(cur != null){
+                if(cur.left != null) st.push(cur.left);//left
+                st.push(cur);//mid
+                st.push(null);
+                if(cur.right != null) st.push(cur.right);//right
+            }else {
+                TreeNode node = st.pop();
+                node.val += pre;
+                pre = node.val;
+            }
+        }
+        return root;
+
+    }//538把二叉搜索树转化为累加树
 
 
     }
