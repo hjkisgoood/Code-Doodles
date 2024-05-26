@@ -1859,6 +1859,192 @@ class Main{
         if(root.val < key) root.right = deleteNode(root.right, key);
         return root;
     }//450删除二叉搜索树中的节点
+    public TreeNode trimBST(TreeNode root, int low, int high) {
+        if(root == null) return null;
+        if(root.val < low) return trimBST(root.right, low, high);
+        if(root.val > high) return trimBST(root.left, low, high);
+
+        root.left = trimBST(root.left, low ,high);
+        root.right = trimBST(root.right ,low , high);
+
+        return root;
+    }//669修建二叉搜索树
+    public TreeNode sortedArrayToBST(int[] nums) {
+        return sortedArrayToBSTHelp(nums, 0, nums.length);//左闭右开
+    }//108将有序数组转换为二叉搜索树
+    private TreeNode sortedArrayToBSTHelp(int[] nums, int left, int right){
+        if(left >= right) return null;
+
+        int mid = left + (right - left)/2;
+        TreeNode root = new TreeNode(nums[mid]);
+        root.left = sortedArrayToBSTHelp(nums, left, mid);
+        root.right = sortedArrayToBSTHelp(nums, mid+1, right);
+        return root;
+    }
+    public TreeNode convertBST(TreeNode root) {
+        int pre = 0;
+        Stack<TreeNode> st = new Stack<>();
+        if(root == null) return null;
+
+        st.push(root);
+        while (!st.isEmpty()){
+            TreeNode cur = st.pop();
+            if(cur != null){
+                if(cur.left != null) st.push(cur.left);//left
+                st.push(cur);//mid
+                st.push(null);
+                if(cur.right != null) st.push(cur.right);//right
+            }else {
+                TreeNode node = st.pop();
+                node.val += pre;
+                pre = node.val;
+            }
+        }
+        return root;
+
+    }//538把二叉搜索树转化为累加树
+
+    public List<List<Integer>> combine(int n, int k) {
+        List<List<Integer>> res = new ArrayList<>();
+        List<Integer> path = new ArrayList<>();
+        combineHelp1(n,k,1,res,path);
+        return res;
+    }//77.组合
+    private void combineHelp1(int n, int k, int index, List<List<Integer>> res, List<Integer> path){
+        if(path.size() == k) {
+            //传引用不能这样,后面对path的修改会修改res里面的值res.add(path);
+            res.add(new ArrayList<>(path));
+            return;
+        }
+        for(int i = index;i <= n;i++){
+            path.add(i);
+            combineHelp1(n , k, i+1,res, path);
+            path.remove(path.size()-1);
+        }
+    }
+
+    public List<List<Integer>> combinationSum3(int k, int n) {
+        List<Integer> path = new ArrayList<>();
+        List<List<Integer>> res = new ArrayList<>();
+        combinationgSum3help1(n, k, 1, 0, res, path);
+        return res;
+    }//216 组合问题三
+    private void combinationgSum3help1(int target, int k, int index, int sum, List<List<Integer>> res, List<Integer> path){
+        if(sum > target) return;
+        if(path.size() == k){
+            if (sum == target) res.add(new ArrayList<>(path));
+            return;
+        }
+
+        for(int i = index; i <= 9 - (k - path.size()) + 1; i++){
+            path.add(i);
+            sum += i;
+            combinationgSum3help1(target, k, i+1, sum, res, path);
+            path.remove(path.size()-1);//回溯
+            sum -= i;
+        }
+    }
+
+
+    public List<String> letterCombinations(String digits) {
+        List<String> res = new ArrayList<>();
+        List<StringBuilder> resHelp = new ArrayList<>();
+        if(digits.length() == 0) return res;
+        String[] numsStr = {"","","abc","def","ghi","jkl","mno","pqrs","tuv","wxyz"};
+        //letterCombinationsHelp1(digits, numsStr, 0,res);
+        letterCombinationsHelp2(digits, numsStr, 0,res,new StringBuilder());
+        return res;
+
+    }//17.电话号码的字母组合
+    private void letterCombinationsHelp1(String digits, String[] numsStr,int num,List<String> res) {
+        if(num == digits.length()) return;
+        String str = numsStr[digits.charAt(num) - '0'];
+        List<StringBuilder> resHelp2 = new ArrayList<>();
+        if(res.size() == 0){
+            for(char c : str.toCharArray()){
+                String temp = "" + c;
+                res.add(temp);
+            }
+        } else for(int i = 0,size = res.size();i < size;i++){
+            for(char c : str.toCharArray()){
+                String temp = res.get(0) + c;
+                res.add(temp);
+            }
+            res.remove(0);
+        }
+        letterCombinationsHelp1(digits, numsStr, num+1, res);
+    }//遍历法效率低
+
+    private void letterCombinationsHelp2(String digits, String[] numsStr,int num,List<String> res, StringBuilder sb) {
+        if (num == digits.length()) {
+            res.add(sb.toString());
+            return;
+        }
+        String str = numsStr[digits.charAt(num) - '0'];
+        for(char c : str.toCharArray()){
+            sb.append(c);
+            letterCombinationsHelp2(digits, numsStr, num+1, res, sb);
+            sb.deleteCharAt(sb.length() - 1);
+        }
+    }//回溯法
+
+    public List<List<Integer>> combinationSum(int[] candidates, int target) {
+        List<List<Integer>> res = new ArrayList<>();
+        List<Integer> path = new ArrayList<>();
+        Arrays.sort(candidates);
+        combinationSumHelp1(candidates, target,0, 0, path, res);
+        //combinationSumHelp2(candidates, target, 0, path, res);//失败的算法
+
+        return res;
+    }//39组合总和
+    private void combinationSumHelp1(int[] candidates, int target,int index, int sum,List<Integer> path, List<List<Integer>> res) {
+        if(sum == target){
+            res.add(new ArrayList<>(path));
+            return;
+        }
+        for(int i =index;i< candidates.length;i++){
+            if(sum + candidates[i] > target) break;
+            path.add(candidates[i]);
+            combinationSumHelp1(candidates, target,i, sum + candidates[i], path, res);
+            path.remove(path.size()-1);//回溯
+        }
+    }
+
+   /* private void combinationSumHelp2(int[] candidates, int target, int sum,List<Integer> path, List<List<Integer>> res) {
+        sum = 0;
+        for (int i: path){
+            sum+=i;
+        }
+        if(sum == target){
+            Collections.sort(path);
+            if (res.contains(path)) return;
+            res.add(new ArrayList<>(path));
+            for(int i :path) System.out.print(i + " ");
+            System.out.println(sum);
+            return;
+        }
+        for(int i : candidates){
+            if(sum + i > target) break;
+            path.add(i);
+            combinationSumHelp2(candidates, target, sum + i, path, res);
+            path.remove(path.size()-1);//回溯
+        }
+    }
+
+    */
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     public List<List<String>> partition(String s) {
         List<List<String>> res = new ArrayList<>();
