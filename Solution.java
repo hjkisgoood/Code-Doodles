@@ -2036,6 +2036,33 @@ class Main{
 
 
 
+    public List<List<Integer>> combinationSum2(int[] candidates, int target) {
+        Arrays.sort(candidates);
+        List<List<Integer>> res = new ArrayList<>();
+        List<Integer> path = new ArrayList<>();
+        boolean[] used = new boolean[candidates.length];
+        Arrays.fill(used, false);
+        combinationSum2Help1(candidates, used, target,0,0, res, path);
+        return res;
+    }//40组合问题2
+    private void combinationSum2Help1(int[] candidates, boolean[] used, int target, int index, int sum, List<List<Integer>> res, List<Integer> path) {
+        if(sum == target){
+            res.add(new ArrayList<>(path));
+            return;
+        }
+
+        for(int i = index;i < candidates.length;i++){
+            if(sum + candidates[i] > target) break;
+            if(i > 0 && candidates[i] == candidates[i-1] && !used[i-1]) continue;//同层去重
+            used[i] = true;
+            path.add(candidates[i]);
+            combinationSum2Help1(candidates, used, target, i+1,sum+candidates[i], res, path);
+            used[i] = false;
+            path.remove(path.size()-1);
+        }
+    }
+
+
 
 
 
