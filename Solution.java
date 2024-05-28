@@ -2066,6 +2066,56 @@ class Main{
 
 
 
+    public List<List<String>> partition(String s) {
+        List<List<String>> res = new ArrayList<>();
+        List<String> path = new ArrayList<>();
+        boolean[][] dp = new boolean[s.length() ][s.length()];
+
+        isPalindrome(s,dp);
+        partitionHelp1(dp, s, 0, res, path);
+        return res;
+
+    }//131分割回文子串
+    private void partitionHelp1(boolean[][] dp,String s, int begin,List<List<String>> res,List<String> path){
+        if(begin == s.length()){
+            res.add(new ArrayList<>(path));
+            return;
+        }
+
+        for(int i = begin; i < s.length(); i++){
+            if(dp[begin][i]){//若果当前子串是回文子串
+                path.add(s.substring(begin, i+1));
+                partitionHelp1(dp,s,i+1,res,path);
+                path.remove(path.size()-1);
+            }else {//不是回文子串
+                continue;
+            }
+        }
+    }
+    private void isPalindrome(String s,boolean[][] dp){
+        char []ch = s.toCharArray();
+        for(int i = 0;i<ch.length;i++) dp[i][i] = true;
+        for(int i = 1;i<ch.length;i++){
+            for(int j  = i;j >= 0; j--){
+                if(ch[i] == ch[j]){
+                    if(i - j <= 1){
+                        dp[j][i] = true;
+                    }else if(dp[j+1][i+1]){
+                        dp[j][i] = true;
+                    }
+                }
+            }
+        }
+        for(boolean[] test :dp){
+            for(boolean test1 : test){
+                System.out.print(test1+" ");
+            }
+            System.out.println();
+        }
+    }
+
+
+
 
 
 
