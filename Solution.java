@@ -2094,7 +2094,7 @@ class Main{
                 if(ch[i] == ch[j]){
                     if(i - j <= 1){
                         dp[j][i] = true;
-                    }else if(dp[j+1][i+1]){
+                    }else if(dp[j+1][i-1]){
                         dp[j][i] = true;
                     }
                 }
@@ -2106,9 +2106,43 @@ class Main{
             }
             System.out.println();
         }
+    }//动态规划给出字符串中的回文子串
+
+    public List<String> restoreIpAddresses(String s) {
+        List<String> res = new ArrayList<>();
+        StringBuilder sb = new StringBuilder(s);
+        restoreIpAddressesHelp1(sb, 0, 0, res);
+        return res;
+    }//93复原IP地址
+    private void restoreIpAddressesHelp1(StringBuilder s, int index, int dotCount, List<String> res) {
+        //终止条件
+        if(dotCount == 3){
+            if(restoreIpAddressesHelpIsvalid(s, index, s.length() - 1)) {
+                res.add(s.toString());
+                System.out.println(s.length()-1);
+            }
+            return;
+        }
+        for(int i = index; i < s.length(); i++){
+            if(restoreIpAddressesHelpIsvalid(s, index, i)){
+                s.insert(i+1, '.');
+                restoreIpAddressesHelp1(s, i+2, dotCount+1, res);
+                s.deleteCharAt(i + 1);//回溯删除刚刚插入的元素
+            }else break;
+
+        }
     }
+    private boolean restoreIpAddressesHelpIsvalid(StringBuilder s, int start, int end) {
+        if(start > end || end - start > 4) return false;
+        if(s.charAt(start) == '0' && start != end) return false;
 
-
+        int num = 0;
+        for(int i = start; i <= end; i++){
+            num = num * 10 + s.charAt(i) - '0';
+        }//这里没有做越界检查,如果num超过int极限也可能过关
+        //所以加在前面第一个if了
+        return num <= 255;
+    }
 
 
 
