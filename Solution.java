@@ -1,9 +1,7 @@
 package bupt;
 
-import jdk.nashorn.internal.runtime.PrototypeObject;
-import sun.reflect.generics.tree.Tree;
+import com.sun.org.apache.xpath.internal.objects.XBoolean;
 
-import javax.swing.*;
 import java.util.*;
 
 public class Solution {
@@ -2144,64 +2142,143 @@ class Main{
         return num <= 255;
     }
 
+    public List<List<Integer>> subsets(int[] nums) {
+        List<List<Integer>> res = new ArrayList<>();
+        List<Integer> path = new ArrayList<>();
+        subsetsHelp(nums, 0, res, path);
+        return res;
+    }//78子集
+    private void subsetsHelp(int[] nums, int start, List<List<Integer>> res, List<Integer> path) {
+        res.add(new ArrayList<>(path));
+        if(start >= nums.length) return;
+        for(int i = start; i < nums.length; i++){
+            path.add(nums[i]);
+            subsetsHelp(nums, i + 1, res, path);
+            path.remove(path.size()-1);
+        }
+    }
 
+    public List<List<Integer>> subsetsWithDup(int[] nums) {
+        Arrays.sort(nums);
+        List<List<Integer>> res = new ArrayList<>();
+        List<Integer> path = new ArrayList<>();
+        boolean [] used = new boolean[nums.length];
+        //subsetsWithDupHelp1(nums, 0, used, res, path);
+        subsetsWithDupHelp2(nums, 0, res, path);
+        return res;
+    }//90子集,带重复元素的
 
+    private void subsetsWithDupHelp1(int[] nums, int start, boolean[] used, List<List<Integer>> res, List<Integer> path) {
+        res.add(new ArrayList<>(path));
+        if(start >= nums.length) return;
+        for(int i = start; i < nums.length; i++){
+            if(i > start && nums[i] == nums[i-1] && !used[i-1]) continue;
+            path.add(nums[i]);
+            used[i] = true;
+            subsetsWithDupHelp1(nums, i + 1, used, res, path);
+            path.remove(path.size()-1);//回溯
+            used[i] = false;//回溯
+        }
+    }//使用used数组
 
+    private void subsetsWithDupHelp2(int[] nums, int start, List<List<Integer>> res, List<Integer> path) {
+        res.add(new ArrayList<>(path));
+        if(start >= nums.length) return;
+        for(int i = start; i < nums.length; i++){
+            if(i > start && nums[i] == nums[i - 1]) continue;
+            path.add(nums[i]);
+            subsetsWithDupHelp2(nums, i + 1, res, path);//递归
+            path.remove(path.size()-1);//回溯
+        }
+    }//不使用used数组
 
+    public List<List<Integer>> findSubsequences(int[] nums) {
+        List<List<Integer>> res = new ArrayList<>();
+        List<Integer> path = new ArrayList<>();
 
+        findSubsequencesHelp(nums, 0, res, path);
+        return res;
+    }//491.非递减子序列
+    private void findSubsequencesHelp(int[] nums, int start, List<List<Integer>> res, List<Integer> path) {
+        if(path.size() >= 2) {
+            res.add(new ArrayList<>(path));
+        }
+        HashSet<Integer> used = new HashSet<>();
+        if(start >= nums.length) return;
+        for(int i = start; i < nums.length; i++){
+            if(used.contains(nums[i]) ) continue;
+            if(path.isEmpty() || nums[i] >= path.get(path.size() - 1)){
+                used.add(nums[i]);
+                path.add(nums[i]);
+                findSubsequencesHelp(nums, i + 1, res, path);
+                path.remove(path.size()-1);
+            }
+        }
+    }
 
+    public List<List<Integer>> permute(int[] nums) {
+        List<List<Integer>> res = new ArrayList<>();
+        List<Integer> path = new ArrayList<>();
+        permuteHelp(nums, res, path);
+        return res;
+    }//46.全排列
+    private void permuteHelp(int[] nums, List<List<Integer>> res, List<Integer> path) {
+        if(path.size() == nums.length) {
+            res.add(new ArrayList<>(path));
+        }
+        for (int num : nums) {
+            if (path.contains(num)) continue;
+            path.add(num);
+            permuteHelp(nums, res, path);
+            path.remove(path.size() - 1);
+        }
+    }
 
-
-    public List<List<String>> partition(String s) {
-        List<List<String>> res = new ArrayList<>();
-        List<String> path = new ArrayList<>();
-        boolean[][] dp = new boolean[s.length() ][s.length()];
-
-        isPalindrome(s,dp);
-        partitionHelp1(dp, s, 0, res, path);
+    public List<List<Integer>> permuteUnique(int[] nums) {
+        List<List<Integer>> res = new ArrayList<>();
+        List<Integer> path = new ArrayList<>();
+        Arrays.sort(nums);
+        permuteUniqueHelp1(nums, new boolean[nums.length], res, path);//使用used数组操作,效率更高
+        //permuteUniqueHelp2(nums, new boolean[nums.length], res, path);//使用hashset对path头进行过滤,
         return res;
 
-    }//131分割回文子串
-    private void partitionHelp1(boolean[][] dp,String s, int begin,List<List<String>> res,List<String> path){
-        if(begin == s.length()){
+    }//47.全排列2,过滤重复排列
+    private void permuteUniqueHelp1(int[] nums, boolean[] used, List<List<Integer>> res, List<Integer> path) {
+        if(path.size() == nums.length) {
             res.add(new ArrayList<>(path));
             return;
         }
-
-        for(int i = begin; i < s.length(); i++){
-            if(dp[begin][i]){//若果当前子串是回文子串
-                path.add(s.substring(begin, i+1));
-                partitionHelp1(dp,s,i+1,res,path);
+        for (int i = 0; i < nums.length; i++) {
+            if(i > 0 && nums[i] == nums[i-1] && used[i-1] == false) continue;
+            if(used[i] == false) {
+                path.add(nums[i]);
+                used[i] = true;
+                permuteUniqueHelp1(nums, used, res, path);
                 path.remove(path.size()-1);
-            }else {//不是回文子串
-                continue;
+                used[i] = false;
             }
+        }
+
+    }
+    private void permuteUniqueHelp2(int[] nums, boolean[] used,List<List<Integer>> res, List<Integer> path) {
+        if(path.size() == nums.length) {
+            res.add(new ArrayList<>(path));
+            return;
+        }
+        HashSet<Integer> set = new HashSet<>();
+        for (int i = 0; i < nums.length; i++) {
+            if (set.contains(nums[i])) continue;
+            if(used[i] == false){
+                path.add(nums[i]);
+                set.add(nums[i]);
+                used[i] = true;
+                permuteUniqueHelp2(nums, used, res, path);
+                path.remove(path.size() - 1);
+                used[i] = false;
+            }
+
         }
     }
-    private void isPalindrome(String s,boolean[][] dp){
-        char []ch = s.toCharArray();
-        for(int i = 0;i<ch.length;i++) dp[i][i] = true;
-        for(int i = 1;i<ch.length;i++){
-            for(int j  = i;j >= 0; j--){
-                if(ch[i] == ch[j]){
-                    if(i - j <= 1){
-                        dp[j][i] = true;
-                    }else if(dp[j+1][i+1]){
-                        dp[j][i] = true;
-                    }
-                }
-            }
-        }
-        for(boolean[] test :dp){
-            for(boolean test1 : test){
-                System.out.print(test1+" ");
-            }
-            System.out.println();
-        }
-    }
-
-
-
 
 
     }
