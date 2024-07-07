@@ -1,7 +1,5 @@
 package bupt;
 
-import com.sun.org.apache.xpath.internal.objects.XBoolean;
-
 import java.util.*;
 
 public class Solution {
@@ -2276,10 +2274,220 @@ class Main{
                 path.remove(path.size() - 1);
                 used[i] = false;
             }
-
         }
     }
 
+    public List<String> findItinerary(List<List<String>> tickets) {
+        List<String> res = new ArrayList<>();
+        List<String> path = new ArrayList<>();
+        tickets.sort(Comparator.comparing(a -> a.get(1)));
+        path.add("JFK");
+        boolean[] used = new boolean[tickets.size()];
+        //findItineraryHelp1(tickets, used, res, path);//递归回溯超时
+        //findItineraryHelp2(tickets, res);
+        return res;
+    }//322重新安排行程//
+
+
+    private boolean findItineraryHelp1(List<List<String>> tickets, boolean[] used, List<String> res, List<String> path) {
+        if(path.size() == tickets.size() + 1) {
+            res.addAll(path);
+            return true;
+        }
+        for(int i = 0; i < tickets.size(); i++) {
+            if(!used[i] && tickets.get(i).get(0).equals(path.get(path.size() - 1))) {
+                path.add(tickets.get(i).get(1));
+                used[i] = true;
+
+                if(findItineraryHelp1(tickets, used, res, path)) {
+                    return true;
+                }
+
+                used[i] = false;//回溯
+                path.remove(path.size() - 1);
+            }
+        }
+        return false;
+    }
+
+//    private void findItineraryHelp2(List<List<String>> ticket, List<String> res){
+//        HashMap<String, HashMap<String, Integer>> map = new HashMap<>();
+//        for(List<String> t: ticket){
+//            HashMap<String, Integer> temp = new HashMap<>();
+//            if(map.containsKey(t.get(0))){
+//                temp = map.get(t.get(0));
+//                temp.put(t.get(1), temp.getOrDefault(t.get(1), 0) + 1);
+//
+//            }else {
+//                temp.put(t.get(1), 1);
+//            }
+//            map.put(t.get(0), temp);
+//        }
+//        res.add("JFK");
+//        back322Help1(ticket.size(), map, res);
+//    }
+//
+//    private boolean back322Help1(int ticketNum, HashMap<String, HashMap<String, Integer>> map, List<String > res){
+//        if(res.size() == ticketNum + 1){
+//            return true;
+//        }
+//        String last = res.get(res.size() - 1);
+//        if(map.containsKey(last)){//防止出现null
+//            for(HashMap.Entry<String, Integer> target : map.get(last).entrySet()){
+//                int count = target.getValue();
+//                if(count > 0){
+//                    res.add(target.getKey());
+//                    target.setValue(count - 1);
+//                    if(back322Help1(ticketNum, map, res)) return true;
+//                    res.remove(res.size() - 1);
+//                    target.setValue(count);
+//                }
+//            }
+//        }
+//        return false;
+//    }
+
+    public List<List<String>> solveNQueens(int n) {
+        List<List<String>> res = new ArrayList<>();
+        char[][] board = new char[n][n];
+        for(char[] c : board) {
+            Arrays.fill(c, '.');
+        }
+        solveNQueensHelp1(n, 0, board, res);
+        return res;
+
+    }//51N皇后
+    private void solveNQueensHelp1(int n, int row, char [][] board, List<List<String>> res){
+        if(row == n){
+            List<String> temp = new ArrayList<>();
+            for(char[] c : board) {
+                temp.add(new String(c));
+            }
+            res.add(new ArrayList<>(temp));
+            return;
+        }
+        for(int col = 0; col < n; col++) {
+            if(solveNQueensHelp1IsValid(row, col, board)){
+                board[row][col] = 'Q';
+                solveNQueensHelp1(n, row + 1, board, res);
+                board[row][col] = '.';//回溯
+            }
+        }
+
 
     }
+
+    private boolean solveNQueensHelp1IsValid(int row, int col, char[][] board) {
+        //检查列
+        for(int i = 0; i<row; i++){
+            if(board[i][col] == 'Q'){
+                return false;
+            }
+        }
+        //检查左斜线
+        for(int i = row-1,j = col - 1; i>=0 && j>=0; i--, j--){
+            if(board[i][j] == 'Q'){
+                return false;
+            }
+        }
+        //检查右斜线
+        for(int i = row - 1, j = col +1;i>=0 && j < board[0].length; i--, j++){
+            if(board[i][j] == 'Q'){
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public void solveSudoku(char[][] board) {
+        solveSudokuHelp( board);
+
+    }//37解数独
+    private boolean solveSudokuHelp(char [][] board) {
+        for(int i = 0; i < 9;i++){
+            for(int j = 0; j < 9; j++){
+                if(board[i][j] != '.') {
+                    continue;
+                }
+                for(char k = '1'; k <= '9'; k++){
+                    if(sudokuIsValid(i, j, k, board)){
+                        board[i][j] = k;
+                        if(solveSudokuHelp(board)) {
+                            return true;
+                        }
+                        board[i][j] = '.';//backTrace
+                    }
+                }
+                return false;
+            }
+        }
+        return true;
+    }
+    private boolean sudokuIsValid(int i, int j, char k, char[][] board) {
+        for(int m = 0;m < 9;m++){
+            if(board[m][j] == k){ return false;}//col
+        }
+        for(int m = 0;m < 9;m++){
+            if(board[i][m] == k){ return false;}//row
+        }
+        int row = (i / 3) * 3;
+        int col = (j / 3) * 3;
+        for(int ii = row; ii < row+3; ii++){//3 * 3
+            for(int jj = col; jj < col+3; jj++){
+                if(board[ii][jj] == k){ return false;}
+            }
+        }
+        return true;
+    }
+
+
+    public static ListNode didi_jikao(ListNode head){
+        ListNode pre = new ListNode();
+        pre = head;
+        int size = 0;
+        for( ; pre.next!=null; size++){
+            pre = pre.next;
+        }
+
+        for(int i = 0;i<size;i++){
+            pre = head;
+            while(pre.next != null){
+                if(pre.next.next != null){
+                    ListNode node1 = pre.next;
+                    ListNode node2 = pre.next.next;
+                    if(node1.val > node2.val){
+                        node1.next = node2.next;
+                        node2.next = node1;
+                        pre.next = node2;
+                    }
+                }
+                pre = pre.next;
+            }
+        }
+        return head;
+    }
+/*
+    public static void main(String[] args) {
+        ListNode head = new ListNode();
+        ListNode pre = head;
+        for(int i = 0; i < 11; i++){
+            ListNode node = new ListNode( i % 3);
+            pre.next = node;
+            pre = pre.next;
+        }
+        ListNode ans = didi_jikao(head);
+        pre = ans;
+        while(pre.next != null){
+            System.out.println(pre.next.val);
+            pre = pre.next;
+        }
+
+    }
+*/
+//滴滴机考测试题
+
+
+
+
+}
 
