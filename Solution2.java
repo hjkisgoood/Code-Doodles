@@ -1,13 +1,16 @@
 package bupt;
 
+
 import java.util.Arrays;
+
+import static java.util.Arrays.sort;
 
 public class Solution2 {
 
     //贪心算法
     public int findContentChildren(int[] g, int[] s) {
-        Arrays.sort(g);
-        Arrays.sort(s);
+        sort(g);
+        sort(s);
         int start = 0;
         int count = 0;
         for(int i = 0; i < s.length && start < g.length; i++){
@@ -64,6 +67,71 @@ public class Solution2 {
         }
         return maxProfit;
     }//122. 买卖股票的最佳时机 II
+
+
+
+    public boolean canJump(int[] nums) {
+        int len = nums.length;
+        if(len == 1) return true;
+        int cover = 0;
+        for(int i = 0; i < len; i++){
+            int tem = nums[i] + i;
+            cover = Math.max(cover, tem);
+            if(cover >= len - 1){
+                return true;
+            }
+            if(cover <= i){
+                return false;
+            }
+        }
+        return true;
+    }//55. 跳跃游戏
+
+    public int jump(int[] nums) {
+        if( nums.length ==0 || nums.length == 1)   return 0;
+        int count = 0;
+        int curDistance = 0;
+        int maxDistance = 0;
+        for(int i = 0; i < nums.length; i++){
+            maxDistance = Math.max(maxDistance, nums[i] + i);
+            if(maxDistance >= nums.length - 1){
+                count++;
+                break;
+            }
+            //走到当前最大区域更新下一步
+            if(i == curDistance){
+                curDistance = maxDistance;
+                count++;
+            }
+        }
+        return count;
+    }//45.跳跃游戏2
+
+    public int largestSumAfterKNegations(int[] nums, int k) {
+        sort(nums);
+        int sum = 0;
+        int index = 0;
+        for(int i = 0; i < nums.length; i++){
+            if(nums[i] < 0 && k > 0){
+                nums[i] = -nums[i];
+                index = i;
+                k--;
+            }
+        }
+        if(k == 0 || k % 2 == 0) {
+            return Arrays.stream(nums).sum();
+        }else if(index != nums.length - 1){
+            if(nums[index + 1] > nums[index]){
+                nums[index] = -nums[index];
+            }else {
+                nums[index + 1] = -nums[index + 1];
+            }
+            return Arrays.stream(nums).sum();
+        }else {
+            nums[index] = -nums[index];
+            return Arrays.stream(nums).sum();
+        }
+    }//1005.k次取反后最大化的数组和
 
 
     }
