@@ -1,7 +1,9 @@
-package bupt;
+package org.example;
 
 
+import java.net.StandardSocketOptions;
 import java.util.Arrays;
+import java.util.LinkedList;
 
 import static java.util.Arrays.sort;
 
@@ -133,5 +135,157 @@ public class Solution2 {
         }
     }//1005.k次取反后最大化的数组和
 
+    public int canCompleteCircuit(int[] gas, int[] cost) {
+        int curSum = 0;
+        int totalSum  = 0;
+        int index = 0;
+        for(int i = 0; i<gas.length;i++){
+            curSum += gas[i] - cost[i];
+            totalSum += gas[i] - cost[i];
+            if(curSum < 0){
+                index = (i + 1) % gas.length;
+                curSum = 0;
+            }
+        }
+        if(totalSum < 0) return -1;
+        return index;
+
+    }//134.加油站
+
+    public int candy(int[] ratings) {
+        int [] candy = new int[ratings.length];
+        candy[0] = 1;
+        for(int i = 1;i < ratings.length; i++){//右边比左边分高的孩子多拿一颗
+            if(ratings[i] > ratings[i-1]){
+                candy[i] = candy[i-1] + 1;
+            }else {
+                candy[i] = 1;
+            }
+        }
+        for(int i = ratings.length - 2;i >= 0; i--){//左边比右边多分的孩子多拿一颗
+            if(ratings[i] > ratings[i + 1]){
+                candy[i] = candy[i + 1] + 1;
+            }
+        }
+        int sum = 0;
+        for(int i : candy){
+            sum += i;
+        }
+        return sum;
+
+    }//135.分发糖果
+
+    public boolean lemonadeChange(int[] bills) {
+        int five = 0;
+        int ten = 0;
+
+        for(int bill : bills){
+            if(bill == 5){
+                five++;
+            }else if(bill == 10){
+                five--;
+                ten++;
+            }else {
+                if(ten > 0){
+                    ten--;
+                    five--;
+                }else {
+                    five = five - 3;
+                }
+            }
+            if(five < 0 || ten < 0){
+                return false;
+            }
+
+        }
+        return true;
+    }//860.柠檬水找零
+
+    public int[][] reconstructQueue(int[][] people) {
+        Arrays.sort(people, (a, b) -> {
+            if(a[0] == b[0]) {
+                return a[1] - b[1];
+            }else {
+                return b[0] - a[0];
+            }
+        });
+
+        LinkedList<int[] > que = new LinkedList<>();
+        for(int []p : people){
+            que.add(p[1], p);
+        }
+        return que.toArray(new int[people.length][]);
+
+    }//406.根据身高重建队列
+
+    public int findMinArrowShots(int[][] points) {
+        //按照气球起点排序
+        //起点一样按照终点排序
+        Arrays.sort(points, (a, b) -> Integer.compare(a[0], b[0]));
+        int count = 1;
+        System.out.println(Arrays.deepToString(points));
+        for(int i =1; i < points.length; i++){
+            if(points[i][0] > points[i - 1][1]){//球不挨着
+                count++;//没有挨着就加一根箭
+            }else{//挨着就射爆，并且将挨着的气球的终点更新为上一个球的终点
+                points[i][1] = Math.min(points[i][1], points[i - 1][1]); // 更新重叠气球最小右边界
+            }
+        }
+        return count;
+
+
+    }//452.用最少的箭射爆气球
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
