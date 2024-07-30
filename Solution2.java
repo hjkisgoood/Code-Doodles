@@ -365,6 +365,104 @@ public class Solution2 {
 
     }//746.使用最小话费爬楼梯
 
+    public int uniquePaths(int m, int n) {
+        int [][]dp = new int[m][n];
+        for(int  i = 0; i < m; i++){
+            dp[i][0] = 1;
+        }
+        for(int i = 0;i < n; i++){
+            dp[0][i] = 1;
+        }
+        for(int i = 1;i < m; i++){
+            for(int j = 1; j < n; j++){
+                dp[i][j] = dp[i-1][j] + dp[i][j-1];
+            }
+        }
+        return dp[m-1][n-1];
+
+
+    }//62.不同路径
+    public int uniquePathsWithObstacles(int[][] obstacleGrid) {
+        int m = obstacleGrid.length;
+        int n = obstacleGrid[0].length;
+        int [][] dp = new int[m][n];
+        if(obstacleGrid[0][0] == 1 ){
+            System.out.println("test");
+            return 0;
+        }
+        if(obstacleGrid[m-1][n-1] == 1){
+            System.out.println("test");
+            return 0;
+        }
+        System.out.println(obstacleGrid[m-1][n-1]);
+
+
+        for(int i = 0;i < m && obstacleGrid[i][0] == 0;i++){
+            dp[i][0] = 1;
+        }
+        for(int i = 0;i < n && obstacleGrid[0][i] == 0;i++){
+            dp[0][i] = 1;
+        }
+        for(int i = 1 ; i < m; i++){
+            for(int j = 1; j < n; j++){
+                if(obstacleGrid[i][j] == 1){
+                    dp[i][j] = 0;
+                }else {
+                    dp[i][j] = dp[i-1][j] + dp[i][j-1];
+                }
+            }
+        }
+        return dp[m-1][n-1];
+
+
+    }//63.不同路径
+
+    public int integerBreak(int n) {
+
+
+        //return integerBreakHelp1(n);
+        return integerBreakHelp2(n);
+
+
+    }//343.整数拆分
+    private int integerBreakHelp1(int n){
+        if(n == 2) return 1;
+        int n3 = n / 3;
+        int n2 = 0;
+        int left3 = n % 3;
+        if(left3 == 1){
+            n2 = 2;
+            n3--;
+        }else if(left3 == 2){
+            n2 = 1;
+        }
+        return (int) (Math.pow(3,n3) * Math.pow(2,n2));
+    }
+    private int integerBreakHelp2(int n){
+        int [] dp = new int[n + 1];
+        dp[2] = 1;
+        for(int i = 3; i <= n; i++ ){
+            for(int j = 1; 2 * j <= i ;j++){
+                dp[i] = Math.max(dp[i], Math.max(j * (i - j), j * dp[i - j]));
+            }
+        }
+        return dp[n];
+
+
+    }
+    public int numTrees(int n) {
+        int []dp = new int[ n + 1];
+        dp[0] = 1;
+        dp[1] = 1;
+        for(int i = 2; i<= n; i++){
+            for(int j = 0; j < i; j++){
+                //选取i作为根节点，该树的个数就等于左子树的个数乘以右子树的个数
+                //把1-n的所有根节点遍历一遍
+                dp[i] += dp[j] * dp[i-j-1];
+            }
+        }
+        return dp[n];
+    }//96.不同的搜索树
 
 
 
