@@ -3,7 +3,7 @@ package org.example;
 
 import java.net.StandardSocketOptions;
 import java.util.*;
-
+import Code-Doodles/TreeNode.java;
 import static java.util.Arrays.binarySearch;
 import static java.util.Arrays.sort;
 
@@ -324,7 +324,19 @@ public class Solution2 {
         return res;
     }//738.单调递增的数字
 
+    public int minCameraCover(TreeNode root) {
+        int []res = new int[1];
+        if(minCameraCoverHelp(root, res) == 0){
+            res[0]++;
+        }
+        return res[0];
 
+    }//968.监控二叉树
+    private int minCameraCoverHelp(TreeNode root, int[] res) {
+        if(root == null){return 2;}//空节点默认有覆盖了
+        int left = minCameraCoverHelp(root.left);
+        int right = minCameraCoverHelp(root.right);
+    }
 
 //动态规划
     public int fib(int n) {
