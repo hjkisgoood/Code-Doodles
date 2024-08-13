@@ -477,6 +477,176 @@ public class Solution2 {
     }//96.不同的搜索树
 
 
+    public boolean canPartition(int[] nums) {
+        int n = nums.length;
+        int sum = 0;
+        for(int i : nums){
+            sum += i;
+        }
+        //sum是奇数显然不能平分
+        if(sum % 2 == 1 ) {return false;}
+        int target = sum / 2;
+        int []dp = new int [target+1];
+        for(int i = 0;i < n;i++){
+            for(int j = target; j >= nums[i];j--){
+                //物品i的重量是nums[i]价值也是nums[i]
+                dp[j] = Math.max(dp[j], dp[j - nums[i]] + nums[i]);
+            }
+        }
+        return dp[target] == target;
+
+    }//416.分割等和子集
+
+    public int lastStoneWeightII(int[] stones) {
+        int n = stones.length;
+        int sum = 0;
+        for(int i : stones){
+            sum += i;
+        }
+
+        int target = sum / 2;
+        int []dp = new int [target+1];
+        for(int i = 0;i < n;i++){
+            for(int j = target; j >= stones[i];j--){
+                //物品i的重量是nums[i]价值也是nums[i]
+                dp[j] = Math.max(dp[j], dp[j - stones[i]] + stones[i]);
+
+            }
+        }
+        return sum - 2 * dp[target];
+    }//1049.最后一块石头的重量
+
+    public int findTargetSumWays(int[] nums, int target) {
+        int sum = 0;
+        for(int i :nums){
+            sum += i;
+        }
+        if(Math.abs(target) > sum){
+            return 0;
+        }
+        if((target + sum) % 2 == 1){
+            return 0;
+        }
+
+        int bagSize = (target + sum) / 2;
+        int []dp = new int[bagSize+1];
+        dp[0] = 1;
+        for(int i = 0;i < nums.length;i++){
+            for(int j = bagSize; j >= nums[i];j--){
+                dp[j] += dp[j - nums[i]];
+            }
+        }
+        return dp[bagSize];
+    }//494.目标和
+
+    public int findMaxForm(String[] strs, int m, int n) {
+        int [][]dp = new int[m+1][n+1];
+        int num1 ;
+        int num0 ;
+        for(String str : strs){
+            num1 = 0;
+            num0 = 0;
+            for(char ch : str.toCharArray()){
+                if(ch == '1'){
+                    num1 ++;
+                }else {
+                    num0 ++;
+                }
+            }
+            //倒序遍历
+            for(int i = m;i >= num0;i--){
+                for(int j = n;j >= num1;j--){
+                    dp[i][j] = Math.max(dp[i][j], dp[i - num0][j - num1] + 1);
+                }
+            }
+
+        }
+        return dp[m][n];
+
+    }//474.一零和
+
+    public int change(int amount, int[] coins) {
+        int [] dp = new int[amount+1];
+        dp[0] = 1;
+        for(int i : coins){
+            for(int j = i;j <= amount; j++){
+                dp[j] += dp[j - i];
+            }
+        }
+        return dp[amount];
+    }//518.零钱兑换
+
+    public int addedInteger(int[] nums1, int[] nums2) {
+        int min1 = Integer.MAX_VALUE;
+        int min2 = Integer.MAX_VALUE;
+        for(int i : nums1){
+            min1 = Math.min(i, min1);
+        }
+        for(int i : nums2){
+            min2 = Math.min(i, min2);
+        }
+        return min2 - min1;
+    }//每日一题3131.找出与数组相加的整数1
+
+    public int rob(int[] nums) {
+        if(nums.length == 1){
+            return nums[0];
+        }else if(nums.length == 0){
+            return 0;
+        }
+        int []dp = new int[nums.length+1];
+        dp[0] = 0;
+        dp[1] = nums[0];
+        for(int i = 2;i <= nums.length;i++){
+            dp[i] = Math.max(dp[i-1], dp[i-2]+nums[i-1]);
+        }
+
+        return dp[nums.length];
+    }//198.打家劫舍
+    public int rob2(int[] nums) {
+        int len = nums.length;
+        if(len == 0) {
+            return 0;
+        }else if(len == 1){
+            return nums[0];
+        }
+        return Math.max(robHelp1(nums, 0, len -1), robHelp1(nums, 1, len));
+    }//213.打家劫舍2//使用滚动数组
+
+    private int robHelp1(int[] nums, int start, int end){
+        int last1 = 0;
+        int last2 = 0;
+        int temp = 0;
+        for(int i = start;i<end;i++){
+            last1 = temp;
+            temp = Math.max(last1, last2+nums[i]);
+            last2 = last1;
+        }
+        return temp;
+    }
+
+    public int rob(TreeNode root) {
+        Map<TreeNode, Integer> map = new HashMap<>();
+        return robHelp2(root, map);
+    }
+    private int robHelp2(TreeNode root, Map<TreeNode, Integer> map){
+        if(root == null){return 0;}
+        if(map.containsKey(root)){return map.get(root);}
+
+        int money = root.val;
+        if(root.left != null){
+            money += robHelp2(root.left.left, map) + robHelp2(root.left.right, map);
+        }
+        if(root.right != null){
+            money += robHelp2(root.right.left, map) + robHelp2(root.right.right, map);
+        }
+        int res = Math.max(money, robHelp2(root.left, map) + robHelp2(root.right, map));
+        map.put(root, res);
+        return res;
+
+    }
+
+
 
 
 
